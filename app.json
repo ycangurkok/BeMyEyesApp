@@ -1,6 +1,14 @@
 {
   "expo": {
     "name": "BME-App",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ]
+    ],
     "slug": "BME-App",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -25,6 +33,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scripts": {
+      "test": "jest"
+    },
+    "jest": {
+      "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$",
+      "moduleFileExtensions": ["js", "jsx", "json", "node"]
+    }    
   }
+  
 }
