@@ -43,7 +43,7 @@ export default function App() {
     if (cameraRef.current) { // Access the ref using .current
       try {
         const data = await cameraRef.current.takePictureAsync(options);
-        console.log(data);
+        //console.log(data);
         setImage(data.uri);
       } catch (e) {
         console.log(e);
@@ -54,8 +54,33 @@ export default function App() {
   const saveImage = async () => { //backende yollama kodu gelicek
     if(image) {
       try{
-        let b64 = image.base64;
-        console.log(b64)
+        console.log(image);
+        let data = {
+          image_data: image.base64
+        };
+        let jsonData = JSON.stringify(data);
+        let URL = "http://127.0.0.1:8080";
+        let headers = new Headers({
+          'Content-Type': 'application/json'
+        });
+        fetch(URL, {
+          method: 'POST',
+          headers: headers,
+          body: jsonData
+        })
+        .then(response => {
+          if (response.ok){
+            return response.json();
+          } else {
+            throw new Error('Request failed');
+          }
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       } catch(e) {
         console.log(e);
       }
