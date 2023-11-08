@@ -6,17 +6,11 @@ import Button from './src/components/Button';
 
 export default function App() {
   const [cameraPermission, setCameraPermission] = useState(null);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState();
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const cameraRef = useRef(null); // Use useRef to create a ref
+  const cameraRef = useRef(); // Use useRef to create a ref
   const [isCameraOpen, setIsCameraOpen] = useState(false); // Track whether the camera is open
-
-  let options = {
-    quality: 1,
-    base64: true,
-    exif: false
-  };
 
   /*useEffect(() => {
     (async () => {
@@ -39,48 +33,33 @@ export default function App() {
     })();
   }, []);
 
-  const takePicture = async () => {
-    if (cameraRef.current) { // Access the ref using .current
-      try {
-        const data = await cameraRef.current.takePictureAsync(options);
-        //console.log(data);
-        setImage(data.uri);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
+  let takePicture = async () => {
+    let options = {
+      quality: 1,
+      base64: true,
+      exif: false
+    };
+    let image = await cameraRef.current.takePictureAsync(options);
+    setImage(image);
+  }
 
   const saveImage = async () => { //backende yollama kodu gelicek
     if(image) {
       try{
-        console.log(image);
-        let data = {
+        const url = "http://192.168.1.106:8080";
+        const data = {
           image_data: image.base64
         };
         let jsonData = JSON.stringify(data);
-        let URL = "http://127.0.0.1:8080";
-        let headers = new Headers({
-          'Content-Type': 'application/json'
-        });
-        fetch(URL, {
+        const response = await fetch(url, {
           method: 'POST',
-          headers: headers,
-          body: jsonData
-        })
-        .then(response => {
-          if (response.ok){
-            return response.json();
-          } else {
-            throw new Error('Request failed');
-          }
-        })
-        .then(data => {
-          console.log(data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
+          body: jsonData,
+          headers: {
+            Accept: 'application/json',
+            "Content-Type": 'application/json',
+          },
         });
+        console.log(response);
       } catch(e) {
         console.log(e);
       }
@@ -130,7 +109,7 @@ export default function App() {
           </View>
         </Camera>
       ) : (
-        <Image source={{ uri: image }} style={styles.camera} />
+        <Image source={{ uri: "data:image/jpg;base64," + image.base64 }} style={styles.camera} />
       )}
       <View>
         {image ? 
