@@ -131,8 +131,7 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </View>
-      <StatusBar style="auto" />
-    </Camera>
+    </View>
   );
 } else {
     // Render the home page with the camera button
