@@ -35,7 +35,7 @@ const CameraComponent = () => {
         setImage(image);
     }
 
-    const saveImage = async () => { //backende yollama kodu gelicek
+    const saveImage = async () => {
         if(image) {
         try{
             const url = "http://192.168.1.106:8080";
@@ -58,17 +58,12 @@ const CameraComponent = () => {
         }
     }
 
-    const openCamera = () => {
-        setIsCameraOpen(true);
-    };
-
     const closeCamera = () => {
         setIsCameraOpen(false);
     };
 
-    const CameraComponent = () => {
-        return (
-            <View style={styles.container}>
+    return (
+        <View style={styles.container}>
             {!image ? (
                 <Camera
                 style={styles.camera}
@@ -118,41 +113,21 @@ const CameraComponent = () => {
                 </TouchableOpacity>
             </View>
             </View>
-        );
-    };
+    );
+}
 
-    if (cameraPermission === false) {
-        return <Text>No access to the camera</Text>;
-    }
-        
-            if (isCameraOpen) {
-                // Render the camera view
-                return <CameraComponent />;
-            } else {
-                // Render the home page with the camera button
-                return (
-                <View style={{ flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={openCamera}>
-                    <View style={{ borderColor: 'black', borderWidth: 1, padding: 10, borderRadius: 5 }}>
-                        <Text style={{ fontSize: 24, color: 'black' }}>Camera</Text>
-                    </View>
-                    </TouchableOpacity>
-                </View>
-                );
-            }
-    };
-    const styles = StyleSheet.create({
-        container: {
-        flex: 1,
-        backgroundColor: '#000',
-        justifyContent: 'center',
-        paddingBottom: 20,
-        },
-        camera: {
-        flex: 1,
-        borderRadius: 20,
-        },
-        // ... other styles if needed
-    });
+const styles = StyleSheet.create({
+    container: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    paddingBottom: 20,
+    },
+    camera: {
+    flex: 1,
+    borderRadius: 20,
+    },
+    // ... other styles if needed
+});
 
-    export default CameraComponent;
+export default CameraComponent;

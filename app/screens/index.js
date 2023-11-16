@@ -1,31 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
-import Button from '../components/Button';
 import CameraComponent from './camera.js'
+import { useNavigation } from '@react-navigation/native';
 
 
 const EntryPage = ({ onNavigate }) => {
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const openCamera = () => {
-    setIsCameraOpen(true);
-    onNavigate();// This will change the state in App.js
-  };
+  const navigation = useNavigation();
 
-if (isCameraOpen) {
-    // Render the camera view
-    return <CameraComponent onClose={() => setIsCameraOpen(false)} />;
-} else {
-    // Render the home page with the camera button
-    return (
-      <View style={styles.container}>
+  const openCamera = () => {
+    navigation.navigate('Camera');
+  };
+  
+  return (
+    <View style={styles.container}>
         <TouchableOpacity onPress={openCamera} style={styles.button}>
           <Text style={styles.buttonText}>Open Camera</Text>
         </TouchableOpacity>
       </View>
-    );
-  }
+  );
 }
 
 const styles = StyleSheet.create({
