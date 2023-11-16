@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "BME-App",
+    "entryPoint": "./app/screens/index.js",
     "plugins": [
       [
         "expo-camera",
