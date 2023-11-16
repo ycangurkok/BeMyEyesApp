@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import CameraComponent from './camera.js'
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -10,7 +9,7 @@ const EntryPage = ({ onNavigate }) => {
   const openCamera = () => {
     navigation.navigate('Camera');
   };
-  
+
   return (
     <View style={styles.container}>
         <TouchableOpacity onPress={openCamera} style={styles.button}>
