@@ -6,10 +6,11 @@ import Button from '../components/Button';
 import CameraComponent from './camera.js'
 
 
-const EntryPage = () => {
+const EntryPage = ({ onNavigate }) => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const openCamera = () => {
     setIsCameraOpen(true);
+    onNavigate();// This will change the state in App.js
   };
 
 if (isCameraOpen) {
