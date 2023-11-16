@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import EntryPage from "./app/screens/index";
 import CameraComponent from './app/screens/camera';
 import { NavigationContainer } from '@react-navigation/native';

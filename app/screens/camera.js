@@ -106,11 +106,6 @@ const CameraComponent = () => {
                 <Button title={'Take a picture'} icon="camera" onPress={takePicture} />
                 
                 }
-                <TouchableOpacity onPress={closeCamera}>
-                <Text style={{ fontSize: 18, color: 'white', textAlign: 'center', backgroundColor: 'blue', padding: 10 }}>
-                    Back to Home Screen
-                </Text>
-                </TouchableOpacity>
             </View>
             </View>
     );
