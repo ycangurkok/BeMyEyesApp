@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-function SignUp() {
+function SignUp({ onNavigate }) {
+    const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
 
+  const openHome = () => {
+    navigation.navigate('Entry');
+  };
   const handleEmailChange = (email) => {
     setEmail(email);
   };
@@ -35,7 +41,15 @@ function SignUp() {
         value={password}
         secureTextEntry
       />
-      <Button title="Sign Up" onPress={handleSignUp} />
+             
+
+    <View style={styles.container}>
+        <TouchableOpacity onPress={openHome} style={styles.button}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
+    </View>
+        
+
       <Button title="Sign In with Google" onPress={() => console.log('Continue with Google')} />
       <Button title="Continue with Email" onPress={() => console.log('Continue with Email')} />
     </View>

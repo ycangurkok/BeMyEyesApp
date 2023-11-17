@@ -15,7 +15,7 @@ const EntryPage = ({ onNavigate }) => {
         <TouchableOpacity onPress={openCamera} style={styles.button}>
           <Text style={styles.buttonText}>Open Camera</Text>
         </TouchableOpacity>
-      </View>
+    </View>
   );
 }
 

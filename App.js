@@ -40,11 +40,11 @@ export default function App() {
       <Stack.Navigator>
       <Stack.Screen name="SignUp" component={SignUpPage} />
         
-        {isSignedIn ? (
+
           <Stack.Screen name="Camera" component={CameraComponent} />
-        ) : (
+
           <Stack.Screen name="Entry" options={{ headerShown: false, title: 'Home'}}  component={EntryPage} />
-        )}
+ 
       </Stack.Navigator>
     </NavigationContainer>
   );
