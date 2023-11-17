@@ -4,6 +4,7 @@ import EntryPage from "./app/screens/index";
 import CameraComponent from './app/screens/camera';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SignUpPage from './app/screens/signUp';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,11 +38,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Entry" options={{ headerShown: false, title: 'Home'}}  component={EntryPage} />
+      <Stack.Screen name="SignUp" component={SignUpPage} />
+        
         {isSignedIn ? (
           <Stack.Screen name="Camera" component={CameraComponent} />
         ) : (
-          null
+          <Stack.Screen name="Entry" options={{ headerShown: false, title: 'Home'}}  component={EntryPage} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
