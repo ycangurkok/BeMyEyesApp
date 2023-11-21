@@ -7,11 +7,6 @@ function SignUp({ onNavigate }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-
-  const openHome = () => {
-    navigation.navigate('Home');
-  };
 
   const openSignIn = () => {
     navigation.navigate('SignIn');
@@ -32,6 +27,10 @@ function SignUp({ onNavigate }) {
   const handleSignUp = () => {
     // Here you would usually send the email and password to your server
     console.log('Sign Up with', email, password);
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
   };
 
   return (
@@ -64,7 +63,7 @@ function SignUp({ onNavigate }) {
              
 
     <View style={styles.container}>
-        <TouchableOpacity onPress={openHome} style={styles.button}>
+        <TouchableOpacity onPress={handleSignUp} style={styles.button}>
         <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
     </View>

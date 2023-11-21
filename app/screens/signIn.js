@@ -3,14 +3,9 @@ import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 
 function SignIn({ onNavigate }) {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  
-
-  const openHome = () => {
-    navigation.navigate('Home');
-  };
+  const [password, setPassword] = useState('');z
 
   const openSignUp = () => {
     navigation.navigate('SignUp');
@@ -24,9 +19,13 @@ function SignIn({ onNavigate }) {
     setPassword(password);
   };
 
-  const handleSignUp = () => {
+  const handleSignIn = () => {
     // Here you would usually send the email and password to your server
     console.log('Sign Up with', email, password);
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
   };
 
   return (
@@ -49,7 +48,7 @@ function SignIn({ onNavigate }) {
              
 
     <View style={styles.container}>
-        <TouchableOpacity onPress={openHome} style={styles.button}>
+        <TouchableOpacity onPress={handleSignIn} style={styles.button}>
         <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
     </View>
