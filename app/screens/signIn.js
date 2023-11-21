@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-function SignUp({ onNavigate }) {
-  const navigation = useNavigation();
-  const [name, setName] = useState('');
+function SignIn({ onNavigate }) {
+    const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
@@ -13,12 +12,8 @@ function SignUp({ onNavigate }) {
     navigation.navigate('Home');
   };
 
-  const openSignIn = () => {
-    navigation.navigate('SignIn');
-  };
-
-  const handleNameChange = (name) => {
-    setName(name);
+  const openSignUp = () => {
+    navigation.navigate('SignUp');
   };
 
   const handleEmailChange = (email) => {
@@ -36,16 +31,6 @@ function SignUp({ onNavigate }) {
 
   return (
     <View style={styles.container}>
-
-
-      <Text>Name:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={handleNameChange}
-        value={name}
-        autoCapitalize="none"
-      />
-
       <Text>Email:</Text>
       <TextInput
         style={styles.input}
@@ -65,16 +50,16 @@ function SignUp({ onNavigate }) {
 
     <View style={styles.container}>
         <TouchableOpacity onPress={openHome} style={styles.button}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
     </View>
 
     <View style={styles.container}>
-        <TouchableOpacity onPress={openSignIn} style={styles.button}>
-        <Text style={styles.buttonText}>Already have an account? Sign In</Text>
+        <TouchableOpacity onPress={openSignUp} style={styles.button}>
+        <Text style={styles.buttonText}>Don't have an account? Sign Up</Text>
         </TouchableOpacity>
     </View>
-
+        
     </View>
   );
 }
@@ -94,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUp;
+export default SignIn;

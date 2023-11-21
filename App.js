@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import EntryPage from "./app/screens/index";
 import CameraComponent from './app/screens/camera';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpPage from './app/screens/signUp';
+import FirstPage from './app/screens/firstScreen';
+import SignInPage from './app/screens/signIn';
+import HomePage from "./app/screens/home";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,12 +40,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen name="SignUp" component={SignUpPage} />
-        
+      <Stack.Screen name="First" component={FirstPage} />
+
+          <Stack.Screen name="SignUp" component={SignUpPage} />
+
+          <Stack.Screen name="SignIn" component={SignInPage} />
 
           <Stack.Screen name="Camera" component={CameraComponent} />
 
-          <Stack.Screen name="Entry" options={{ headerShown: false, title: 'Home'}}  component={EntryPage} />
+          <Stack.Screen name="Home" options={{ headerShown: false, title: 'Home'}}  component={HomePage} />
  
       </Stack.Navigator>
     </NavigationContainer>

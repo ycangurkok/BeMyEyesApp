@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
-const EntryPage = ({ onNavigate }) => {
+const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
 
   const openCamera = () => {
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default EntryPage;
+export default HomePage;
