@@ -92,6 +92,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
   },
+  button: {
+    height: 57,
+    width: 355,
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: '#58CECE'
+  },
+  buttonText: {
+    fontSize: 24,
+    color: 'black',
+  },
 });
 
 export default SignUp;

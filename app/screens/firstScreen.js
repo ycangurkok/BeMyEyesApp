@@ -3,7 +3,7 @@ import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 
 function FirstPage({ onNavigate }) {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
@@ -68,6 +68,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
+  },
+  button: {
+    height: 57,
+    width: 355,
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: '#58CECE'
+  },
+  buttonText: {
+    fontSize: 24,
+    color: 'black',
   },
 });
 
