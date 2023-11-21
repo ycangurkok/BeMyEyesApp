@@ -5,7 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 function SignIn({ onNavigate }) {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');z
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
 
   const openSignUp = () => {
     navigation.navigate('SignUp');
@@ -13,13 +15,29 @@ function SignIn({ onNavigate }) {
 
   const handleEmailChange = (email) => {
     setEmail(email);
+    setEmailError(null);
   };
 
   const handlePasswordChange = (password) => {
     setPassword(password);
+    setPasswordError(null);
   };
 
   const handleSignIn = () => {
+    let e_error = false;
+    let p_error = false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)) {
+      e_error = true;
+      setEmailError("Invalid email address!");
+    }
+    if (password.length < 6 || !/\d/.test(password)) {
+      p_error = true;
+      setPasswordError('Password must be at least 6 characters and include at least one number');
+    }
+    if (p_error || e_error) {
+      return;
+    }
     // Here you would usually send the email and password to your server
     console.log('Sign Up with', email, password);
     navigation.reset({
@@ -38,6 +56,7 @@ function SignIn({ onNavigate }) {
         keyboardType="email-address"
         autoCapitalize="none"
       />
+      {emailError && <Text style={styles.errorText}>{emailError}</Text>}
       <Text>Password:</Text>
       <TextInput
         style={styles.input}
@@ -45,7 +64,8 @@ function SignIn({ onNavigate }) {
         value={password}
         secureTextEntry
       />
-             
+      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+
 
     <View style={styles.container}>
         <TouchableOpacity onPress={handleSignIn} style={styles.button}>
@@ -75,6 +95,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
+  },
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

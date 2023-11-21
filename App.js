@@ -40,7 +40,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-          <Stack.Screen name="First" component={FirstPage} />
+          <Stack.Screen name="First" options={{headerShown: false, title: "First"}} component={FirstPage} />
 
           <Stack.Screen name="SignUp" component={SignUpPage} />
 

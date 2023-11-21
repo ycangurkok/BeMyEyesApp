@@ -7,6 +7,8 @@ function SignUp({ onNavigate }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
 
   const openSignIn = () => {
     navigation.navigate('SignIn');
@@ -18,14 +20,31 @@ function SignUp({ onNavigate }) {
 
   const handleEmailChange = (email) => {
     setEmail(email);
+    setEmailError(null);
   };
 
   const handlePasswordChange = (password) => {
     setPassword(password);
+    setPasswordError(null);
   };
 
   const handleSignUp = () => {
+    let e_error = false;
+    let p_error = false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     // Here you would usually send the email and password to your server
+    if(!emailRegex.test(email)) {
+      e_error = true;
+      setEmailError("Invalid email address!");
+    }
+    if (password.length < 6 || !/\d/.test(password)) {
+      p_error = true;
+      setPasswordError('Password must be at least 6 characters and include at least one number');
+      return;
+    }
+    if (p_error || e_error) {
+      return;
+    }
     console.log('Sign Up with', email, password);
     navigation.reset({
       index: 0,
@@ -53,6 +72,7 @@ function SignUp({ onNavigate }) {
         keyboardType="email-address"
         autoCapitalize="none"
       />
+      {emailError && <Text style={styles.errorText}>{emailError}</Text>}
       <Text>Password:</Text>
       <TextInput
         style={styles.input}
@@ -60,7 +80,7 @@ function SignUp({ onNavigate }) {
         value={password}
         secureTextEntry
       />
-             
+      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
     <View style={styles.container}>
         <TouchableOpacity onPress={handleSignUp} style={styles.button}>
@@ -103,6 +123,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     color: 'black',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 
