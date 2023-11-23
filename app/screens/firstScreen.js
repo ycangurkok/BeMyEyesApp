@@ -46,11 +46,8 @@ function FirstPage({ onNavigate }) {
             </TouchableOpacity>
         </View>
 
-        <View style={styles.container}>
-            <TouchableOpacity onPress={openSignUp} style={styles.button}>
-            <Text style={styles.buttonText}>Don't have an account? Sign Up</Text>
-            </TouchableOpacity>
-        </View>
+
+        <Button title="Don't have an account? Sign Up" onPress={openSignUp} />
 
     </View>
   );
