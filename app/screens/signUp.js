@@ -28,7 +28,7 @@ function SignUp({ onNavigate }) {
     setPasswordError(null);
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     let e_error = false;
     let p_error = false;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,6 +46,23 @@ function SignUp({ onNavigate }) {
       return;
     }
     console.log('Sign Up with', email, password);
+    const url = "https://bemyeyesdeploy.azurewebsites.net/WeatherForecast";
+            const data = {
+                username: name,
+                fullname: name,
+                email: email,
+                password: password
+            };
+            let jsonData = JSON.stringify(data);
+            const response = await fetch(url, {
+                method: 'POST',
+                body: jsonData, //Burası formdata olucak image ep leri için.
+                headers: {
+                    Accept: 'application/json',
+                    "Content-Type": 'application/json',
+                },
+            });
+    console.log(response);
     navigation.reset({
       index: 0,
       routes: [{name: 'Home'}],
