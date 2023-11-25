@@ -7,6 +7,7 @@ import SignUpPage from './app/screens/signUp';
 import FirstPage from './app/screens/firstScreen';
 import SignInPage from './app/screens/signIn';
 import HomePage from "./app/screens/home";
+import SettingsPage from "./app/screens/settings";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,14 +43,16 @@ export default function App() {
       <Stack.Navigator>
           <Stack.Screen name="First" options={{headerShown: false, title: "First"}} component={FirstPage} />
 
-          <Stack.Screen name="SignUp" component={SignUpPage} />
+          <Stack.Screen name="SignUp" options={{headerShown: false, title: "Sign Up"}} component={SignUpPage} />
 
           <Stack.Screen name="SignIn" options={{headerShown: false, title: "Sign In"}} component={SignInPage} />
 
-          <Stack.Screen name="Camera" component={CameraComponent} />
+          <Stack.Screen name="Camera" options={{headerShown: false, title: "Camera"}} component={CameraComponent} />
 
-          <Stack.Screen name="Home" options={{ headerShown: false, title: 'Home'}}  component={HomePage} />
+          <Stack.Screen name="Home"   component={HomePage} />
  
+          <Stack.Screen name="Settings"   component={SettingsPage} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

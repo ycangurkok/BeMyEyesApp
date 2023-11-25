@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-function SignIn({ onNavigate }) {
+function Settings({ onNavigate }) {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,36 +49,7 @@ function SignIn({ onNavigate }) {
   return (
     <View style={styles.container}>
 
-       <Text style={styles.headerText}>BeMyEyes</Text>
 
-      <View style={styles.container}>
-        <TextInput
-          style={styles.googleButton}
-          onChangeText={handleEmailChange}
-          value={email}
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          placeholderTextColor="white"
-        />
-        {emailError && <Text style={styles.errorText}>{emailError}</Text>}
-
-        <TextInput
-          style={styles.googleButton}
-          onChangeText={handlePasswordChange}
-          value={password}
-          placeholder="Enter your password"
-          placeholderTextColor="white"
-          secureTextEntry
-        />
-        {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
-
-
-      
-      <Button title="Sign In" style={styles.signInLink} onPress={handleSignIn} />
-    </View>
-
-    <Button title="Don't have an account? Sign Up" style={styles.link} onPress={openSignUp} />
         
     </View>
   );
@@ -90,6 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#000000',
     padding: 20,
+
   },
   input: {
     height: 40,
@@ -147,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignIn;
+export default Settings;

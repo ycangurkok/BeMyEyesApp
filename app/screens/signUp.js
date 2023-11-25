@@ -72,44 +72,45 @@ function SignUp({ onNavigate }) {
   return (
     <View style={styles.container}>
 
+    <Text style={styles.headerText}>BeMyEyes</Text>
 
-      <Text>Name:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={handleNameChange}
-        value={name}
-        autoCapitalize="none"
-      />
+      <View style={styles.container}>
+        <TextInput
+          style={styles.googleButton}
+          onChangeText={handleNameChange}
+          placeholder="Enter your name"
+          value={name}
+          autoCapitalize="none"
+          placeholderTextColor="white"
+        />
 
-      <Text>Email:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={handleEmailChange}
-        value={email}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {emailError && <Text style={styles.errorText}>{emailError}</Text>}
-      <Text>Password:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={handlePasswordChange}
-        value={password}
-        secureTextEntry
-      />
-      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+        <TextInput
+          style={styles.googleButton}
+          onChangeText={handleEmailChange}
+          value={email}
+          keyboardType="email-address"
+          placeholder="Enter your email"
+          autoCapitalize="none"
+          placeholderTextColor="white"
+        />
+        {emailError && <Text style={styles.errorText}>{emailError}</Text>}
+        <TextInput
+          style={styles.googleButton}
+          onChangeText={handlePasswordChange}
+          value={password}
+          placeholder="Enter your password"
+          placeholderTextColor="white"
+          secureTextEntry
+        />
+        {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
-    <View style={styles.container}>
-        <TouchableOpacity onPress={handleSignUp} style={styles.button}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
+
+      <Button title="Sign Up" style={styles.signUpLink} onPress={handleSignUp} />
+
     </View>
 
-    <View style={styles.container}>
-        <TouchableOpacity onPress={openSignIn} style={styles.button}>
-        <Text style={styles.buttonText}>Already have an account? Sign In</Text>
-        </TouchableOpacity>
-    </View>
+    <Button title="Alreadt have an account? Sign In" style={styles.link} onPress={openSignIn} />
+
 
     </View>
   );
@@ -118,7 +119,8 @@ function SignUp({ onNavigate }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#000000',
     padding: 20,
   },
   input: {
@@ -127,6 +129,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
+  },
+  googleButton: {
+    height: 67,
+    width: 355,
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'gray',
+    justifyContent: 'flex-start',
+    marginBottom: 25,
   },
   button: {
     height: 57,
@@ -137,13 +150,31 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     backgroundColor: '#58CECE'
   },
+  signUpLink: {
+    justifyContent: 'center',
+    marginBottom: 10,
+    backgroundColor: '#58CECE'
+  },
   buttonText: {
     fontSize: 24,
     color: 'black',
   },
+  headerText: {
+    justifyContent: 'flex-start',
+    width: 392,
+    height: 208,
+    padding: 100,
+    fontSize: 44,
+    color: 'white',
+  
+  },
   errorText: {
     color: 'red',
     marginBottom: 10,
+  },
+  link: {
+    justifyContent: 'flex-end',
+    backgroundColor: '#58CECE'
   },
 });
 
