@@ -44,7 +44,7 @@ export default function App() {
 
           <Stack.Screen name="SignUp" component={SignUpPage} />
 
-          <Stack.Screen name="SignIn" component={SignInPage} />
+          <Stack.Screen name="SignIn" options={{headerShown: false, title: "Sign In"}} component={SignInPage} />
 
           <Stack.Screen name="Camera" component={CameraComponent} />
 

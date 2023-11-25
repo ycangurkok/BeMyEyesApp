@@ -48,36 +48,35 @@ function SignIn({ onNavigate }) {
 
   return (
     <View style={styles.container}>
-      <Text>Email:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={handleEmailChange}
-        value={email}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {emailError && <Text style={styles.errorText}>{emailError}</Text>}
-      <Text>Password:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={handlePasswordChange}
-        value={password}
-        secureTextEntry
-      />
-      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+
+       <Text style={styles.headerText}>BeMyEyes</Text>
+
+      <View style={styles.container}>
+        <TextInput
+          style={styles.googleButton}
+          onChangeText={handleEmailChange}
+          value={email}
+          placeholder="Enter your email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        {emailError && <Text style={styles.errorText}>{emailError}</Text>}
+
+        <TextInput
+          style={styles.googleButton}
+          onChangeText={handlePasswordChange}
+          value={password}
+          placeholder="Enter your password"
+          secureTextEntry
+        />
+        {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
 
-    <View style={styles.container}>
-        <TouchableOpacity onPress={handleSignIn} style={styles.button}>
-        <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
+      
+      <Button title="Sign In" style={styles.signInLink} onPress={handleSignIn} />
     </View>
 
-    <View style={styles.container}>
-        <TouchableOpacity onPress={openSignUp} style={styles.button}>
-        <Text style={styles.buttonText}>Don't have an account? Sign Up</Text>
-        </TouchableOpacity>
-    </View>
+    <Button title="Don't have an account? Sign Up" style={styles.link} onPress={openSignUp} />
         
     </View>
   );
@@ -87,6 +86,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#000000',
     padding: 20,
   },
   input: {
@@ -96,8 +96,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
   },
+  googleButton: {
+    height: 67,
+    width: 355,
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'gray',
+    justifyContent: 'center',
+    marginBottom: 25,
+  },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#9C9A9A',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -106,9 +117,32 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  text: {
+    fontSize: 14,
+    color: 'white',
+  },
+  headerText: {
+    justifyContent: 'flex-start',
+    width: 392,
+    height: 208,
+    padding: 100,
+    fontSize: 44,
+    color: 'white',
+    marginBottom: 100,
+  },
   errorText: {
     color: 'red',
     marginBottom: 10,
+  },
+  signInLink: {
+    justifyContent: 'center',
+    marginBottom: 10,
+    backgroundColor: '#58CECE'
+  },
+  link: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: '#58CECE'
   },
 });
 
