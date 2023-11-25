@@ -8,6 +8,7 @@ import FirstPage from './app/screens/firstScreen';
 import SignInPage from './app/screens/signIn';
 import HomePage from "./app/screens/home";
 import SettingsPage from "./app/screens/settings";
+import WhereAmIPage from "./app/screens/whereAmI";
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,8 @@ export default function App() {
           <Stack.Screen name="Home"   component={HomePage} />
  
           <Stack.Screen name="Settings"   component={SettingsPage} />
+
+          <Stack.Screen name="WhereAmI"   component={WhereAmIPage} />
 
       </Stack.Navigator>
     </NavigationContainer>

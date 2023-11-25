@@ -20,6 +20,10 @@ const HomePage = ({ onNavigate }) => {
     navigation.navigate('Camera', { headerTitle });
   };
 
+  const openWhereAmI = () => {
+    navigation.navigate('WhereAmI');
+  };
+
 
   const openHome = () => {
     navigation.navigate('Home');
@@ -49,7 +53,7 @@ const HomePage = ({ onNavigate }) => {
       </View>
 
       <View style={styles.row}>
-        <TouchableOpacity onPress={() => openCamera('Where Am I?')} style={styles.button}>
+        <TouchableOpacity onPress={() => openWhereAmI('Where Am I?')} style={styles.button}>
           <Text style={styles.buttonText}>Where Am I?</Text>
         </TouchableOpacity>
 
