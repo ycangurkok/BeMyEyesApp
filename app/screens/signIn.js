@@ -23,7 +23,7 @@ function SignIn({ onNavigate }) {
     setPasswordError(null);
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     let e_error = false;
     let p_error = false;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -31,7 +31,7 @@ function SignIn({ onNavigate }) {
       e_error = true;
       setEmailError("Invalid email address!");
     }
-    if (password.length < 6 || !/\d/.test(password)) {
+    if (password.length < 6) {
       p_error = true;
       setPasswordError('Password must be at least 6 characters and include at least one number');
     }
@@ -39,11 +39,31 @@ function SignIn({ onNavigate }) {
       return;
     }
     // Here you would usually send the email and password to your server
-    console.log('Sign Up with', email, password);
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Home'}],
+    console.log('Sign in with', email, password);
+    const url = "https://bemyeyesdeploy.azurewebsites.net/api/auth/login";
+    const data = {
+        email: email,
+        password: password
+    };
+    let jsonData = JSON.stringify(data);
+    const response = await fetch(url, {
+        method: 'POST',
+        body: jsonData, //Burası formdata olucak image ep leri için.
+        headers: {
+            Accept: 'application/json',
+            "Content-Type": 'application/json',
+        },
     });
+    if(response.ok){
+      console.log(response);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Home'}],
+        });
+    }
+    else{
+      return;
+    }
   };
 
   return (
@@ -56,8 +76,7 @@ function SignIn({ onNavigate }) {
           style={styles.googleButton}
           onChangeText={handleEmailChange}
           value={email}
-          placeholder="Enter your email"
-          keyboardType="email-address"
+          placeholder="Enter your e-mail"
           autoCapitalize="none"
           placeholderTextColor="white"
         />
@@ -69,6 +88,7 @@ function SignIn({ onNavigate }) {
           value={password}
           placeholder="Enter your password"
           placeholderTextColor="white"
+          autoCapitalize="none"
           secureTextEntry
         />
         {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}

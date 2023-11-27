@@ -37,8 +37,8 @@ function SignUp({ onNavigate }) {
       e_error = true;
       setEmailError("Invalid email address!");
     }
-    if (password.length < 6 || !/\d/.test(password)) {
-      p_error = true;
+    if (password.length < 6) {
+      p_error = true;username
       setPasswordError('Password must be at least 6 characters and include at least one number');
       return;
     }
@@ -46,7 +46,7 @@ function SignUp({ onNavigate }) {
       return;
     }
     console.log('Sign Up with', email, password);
-    const url = "https://bemyeyesdeploy.azurewebsites.net/WeatherForecast";
+    const url = "https://bemyeyesdeploy.azurewebsites.net/api/auth/registration";
             const data = {
                 username: name,
                 fullname: name,
@@ -62,11 +62,17 @@ function SignUp({ onNavigate }) {
                     "Content-Type": 'application/json',
                 },
             });
-    console.log(response);
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Home'}],
-    });
+    if(response.ok){
+      console.log(response);
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
+    }
+    else{
+      return;
+    }
+    
   };
 
   return (
@@ -78,7 +84,7 @@ function SignUp({ onNavigate }) {
         <TextInput
           style={styles.googleButton}
           onChangeText={handleNameChange}
-          placeholder="Enter your name"
+          placeholder="Enter your user name"
           value={name}
           autoCapitalize="none"
           placeholderTextColor="white"
@@ -100,6 +106,7 @@ function SignUp({ onNavigate }) {
           value={password}
           placeholder="Enter your password"
           placeholderTextColor="white"
+          autoCapitalize="none"
           secureTextEntry
         />
         {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
