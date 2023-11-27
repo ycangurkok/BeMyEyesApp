@@ -4,6 +4,7 @@ import { Camera, CameraType } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import Button from '../components/Button'; // Make sure the path is correct
 import { useNavigation, useRoute } from '@react-navigation/native';
+import FormData from "form-data";
 
 const CameraComponent = ({ onNavigate }) => {
     const navigation = useNavigation();
@@ -64,25 +65,42 @@ const CameraComponent = ({ onNavigate }) => {
     }
 
     const saveImage = async () => {
-        if(image) {
-        try{
-            const url = "http://192.168.1.106:8080";
-            const data = {
-            image_data: image.base64
-            };
-            let jsonData = JSON.stringify(data);
-            const response = await fetch(url, {
-            method: 'POST',
-            body: jsonData,
-            headers: {
-                Accept: 'application/json',
-                "Content-Type": 'application/json',
-            },
-            });
-            console.log(response);
-        } catch(e) {
-            console.log(e);
-        }
+        // Write code here
+        if (image) {
+            try {
+                const formData = new FormData();
+                formData.append('ImageFile', {
+                    uri: image.uri,
+                    type: 'image/jpg',
+                    name: 'photo.jpg',
+                });
+    
+                const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/describeImage', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    body: formData,
+                });
+    
+                if (response.ok) {
+                    console.log('Image uploaded successfully');
+                    const responseData = await response.json();
+                    console.log(responseData);
+                    // Handle success, e.g., show a success message
+                } else {
+                    console.error('Failed to upload image');
+                    console.log(response);
+                    // Handle failure, e.g., show an error message
+                }
+            } catch (error) {
+                console.error('Error uploading image', error);
+                // Handle error, e.g., show an error message
+            }
+        } else {
+            console.warn('No image to save');
+            // Handle the case where there is no image to save
         }
     }
 
