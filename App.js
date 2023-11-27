@@ -1,162 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
-import Button from './src/components/Button';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CameraComponent from './app/screens/camera';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SignUpPage from './app/screens/signUp';
+import FirstPage from './app/screens/firstScreen';
+import SignInPage from './app/screens/signIn';
+import HomePage from "./app/screens/home";
+import SettingsPage from "./app/screens/settings";
+import WhereAmIPage from "./app/screens/whereAmI";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [cameraPermission, setCameraPermission] = useState(null);
-  const [image, setImage] = useState();
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const cameraRef = useRef(); // Use useRef to create a ref
-  const [isCameraOpen, setIsCameraOpen] = useState(false); // Track whether the camera is open
 
-  /*useEffect(() => {
-    (async () => {
-      MediaLibrary.requestPermissionsAsync();
-      const cameraStatus = await Camera.requestCameraPermissionsAsync();
-      setCameraPermission(cameraStatus.status === 'granted');
-    })();
-  }, []);*/
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const cameraStatus = await Camera.requestCameraPermissionsAsync();
-      const mediaLibraryStatus = await MediaLibrary.requestPermissionsAsync();
-
-      if (cameraStatus.status === 'granted' && mediaLibraryStatus.status === 'granted') {
-        setCameraPermission(true);
-      } else {
-        setCameraPermission(false);
-      }
-    })();
+    checkSignInStatus();
   }, []);
 
-  let takePicture = async () => {
-    let options = {
-      quality: 1,
-      base64: true,
-      exif: false
-    };
-    let image = await cameraRef.current.takePictureAsync(options);
-    setImage(image);
-  }
+  const checkSignInStatus = async () => {
+    try {
+      // Retrieve the user's authentication token from AsyncStorage
+      const token = await AsyncStorage.getItem('userToken');
 
-  const saveImage = async () => { //backende yollama kodu gelicek
-    if(image) {
-      try{
-        const url = "http://192.168.1.106:8080";
-        const data = {
-          image_data: image.base64
-        };
-        let jsonData = JSON.stringify(data);
-        const response = await fetch(url, {
-          method: 'POST',
-          body: jsonData,
-          headers: {
-            Accept: 'application/json',
-            "Content-Type": 'application/json',
-          },
-        });
-        console.log(response);
-      } catch(e) {
-        console.log(e);
+      // Check if the token exists
+      if (token) {
+        // User is signed in
+        setIsSignedIn(true);
+      } else {
+        // User is not signed in
+        setIsSignedIn(false);
       }
+    } catch (error) {
+      console.error('Error checking sign-in status:', error);
     }
-  }
-
-  const openCamera = () => {
-    setIsCameraOpen(true);
   };
+  
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+          <Stack.Screen name="First" options={{headerShown: false, title: "First"}} component={FirstPage} />
 
-  const closeCamera = () => {
-    setIsCameraOpen(false);
-  };
+          <Stack.Screen name="SignUp" options={{headerShown: false, title: "Sign Up"}} component={SignUpPage} />
 
+          <Stack.Screen name="SignIn" options={{headerShown: false, title: "Sign In"}} component={SignInPage} />
 
-  if (cameraPermission === false) {
-    return <Text>No access to the camera</Text>;
-  }
+          <Stack.Screen name="Camera" options={{headerShown: false, title: "Camera"}} component={CameraComponent} />
 
-  if (isCameraOpen) {
-    // Render the camera view
-    return (
-      <View style={styles.container}>
-      {!image ? (
-        <Camera
-          style={styles.camera}
-          type={type}
-          flashMode={flash}
-          ref={cameraRef}
-        >
-          <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 30,
-          }}>
-            <Button icon={'retweet'} onPress={() => {
-              setType(type === CameraType.back ? CameraType.front : CameraType.back)
-            }}/>
-            <Button icon={'flash'} 
-              color={flash === 'off' ? 'gray' : '#f1f1f1'}
-              onPress={() => {
-                setFlash(flash === 'off' 
-                  ? 'on'
-                  : 'off'
-                  )
-              }}/>
-          </View>
-        </Camera>
-      ) : (
-        <Image source={{ uri: "data:image/jpg;base64," + image.base64 }} style={styles.camera} />
-      )}
-      <View>
-        {image ? 
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingHorizontal: 50
-        }}>
-          <Button title={"Re-take"} icon={"retweet"} onPress={() => setImage(null)}/>
-          <Button title={"Save"} icon={"check"} onPress={saveImage}/>
-        </View>
-        :
-        <Button title={'Take a picture'} icon="camera" onPress={takePicture} />
-        
-        }
-        <TouchableOpacity onPress={closeCamera}>
-          <Text style={{ fontSize: 18, color: 'white', textAlign: 'center', backgroundColor: 'blue', padding: 10 }}>
-            Back to Home Screen
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <Stack.Screen name="Home"   component={HomePage} />
+ 
+          <Stack.Screen name="Settings"   component={SettingsPage} />
+
+          <Stack.Screen name="WhereAmI"   component={WhereAmIPage} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-} else {
-    // Render the home page with the camera button
-    return (
-      <View style={{ flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-        <TouchableOpacity onPress={openCamera}>
-          <View style={{ borderColor: 'black', borderWidth: 1, padding: 10, borderRadius: 5 }}>
-            <Text style={{ fontSize: 24, color: 'black' }}>Camera</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    paddingBottom: 20,
-  },
-  camera: {
-    flex: 1,
-    borderRadius: 20,
-  },
-});
-
