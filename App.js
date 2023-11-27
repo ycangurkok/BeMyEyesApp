@@ -22,7 +22,6 @@ export default function App() {
 
   const checkSignInStatus = async () => {
     try {
-      await AsyncStorage.setItem('userToken', "asdf")
       // Retrieve the user's authentication token from AsyncStorage
       const token = await AsyncStorage.getItem('userToken');
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function SignIn({ onNavigate }) {
   const navigation = useNavigation();
@@ -55,11 +56,11 @@ function SignIn({ onNavigate }) {
         },
     });
     if(response.ok){
-      console.log(response);
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Home'}],
-        });
+      await AsyncStorage.setItem('userToken', "test");
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
     }
     else{
       return;
