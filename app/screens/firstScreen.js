@@ -102,14 +102,14 @@ const styles = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center',
     fontStyle: 'normal',
-    fontWeight: 400,
+    //fontWeight: 400,
   },
   buttonText: {
     fontSize: 20,
     color: '#000',
     textAlign: 'center',
     fontStyle: 'normal',
-    fontWeight: 400,
+    //fontWeight: 400,
   },
   buttonSpacing: {
     marginBottom: 25,
