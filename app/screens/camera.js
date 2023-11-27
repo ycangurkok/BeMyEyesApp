@@ -5,6 +5,8 @@ import * as MediaLibrary from 'expo-media-library';
 import Button from '../components/Button'; // Make sure the path is correct
 import { useNavigation, useRoute } from '@react-navigation/native';
 import FormData from "form-data";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Speech from "expo-speech";
 
 const CameraComponent = ({ onNavigate }) => {
     const navigation = useNavigation();
@@ -16,6 +18,7 @@ const CameraComponent = ({ onNavigate }) => {
     const cameraRef = useRef(); // Use useRef to create a ref
     const [isCameraOpen, setIsCameraOpen] = useState(false); // Track whether the camera is open
     const [image, setImage] = useState(null);
+    let lastSpoken = "";
 
     useLayoutEffect(() => {
         const headerTitle = route.params?.headerTitle || 'Default Camera'; // Parametre olarak verilen başlık, yoksa varsayılan bir başlık
@@ -46,8 +49,9 @@ const CameraComponent = ({ onNavigate }) => {
         navigation.navigate('Home');
       };
     
-      const replaySound = () => {
-        navigation.navigate('Home');
+      const replaySound = async () => {
+        const lastSpoken = await AsyncStorage.getItem("lastSpoken");
+        Speech.speak(lastSpoken);
       };
     
       const openSettings = () => {
@@ -65,7 +69,6 @@ const CameraComponent = ({ onNavigate }) => {
     }
 
     const saveImage = async () => {
-        // Write code here
         if (image) {
             try {
                 const formData = new FormData();
@@ -87,7 +90,9 @@ const CameraComponent = ({ onNavigate }) => {
                 if (response.ok) {
                     console.log('Image uploaded successfully');
                     const responseData = await response.json();
-                    console.log(responseData);
+                    lastSpoken = String(responseData);
+                    await AsyncStorage.setItem('lastSpoken', lastSpoken);
+                    Speech.speak(lastSpoken);
                     // Handle success, e.g., show a success message
                 } else {
                     console.error('Failed to upload image');
@@ -96,8 +101,9 @@ const CameraComponent = ({ onNavigate }) => {
                 }
             } catch (error) {
                 console.error('Error uploading image', error);
-                // Handle error, e.g., show an error message
+                // Handle error, e.g., show an error
             }
+        
         } else {
             console.warn('No image to save');
             // Handle the case where there is no image to save

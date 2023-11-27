@@ -1,7 +1,8 @@
 import React, { useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Speech from "expo-speech";
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
@@ -29,8 +30,9 @@ const HomePage = ({ onNavigate }) => {
     navigation.navigate('Home');
   };
 
-  const replaySound = () => {
-    navigation.navigate('Home');
+  const replaySound = async () => {
+    const lastSpoken = await AsyncStorage.getItem("lastSpoken");
+    Speech.speak(lastSpoken);
   };
 
   const openSettings = () => {
