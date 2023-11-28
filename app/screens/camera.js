@@ -60,7 +60,7 @@ const CameraComponent = ({ onNavigate }) => {
 
     let takePicture = async () => {
         let options = {
-        quality: 1,
+        quality: 0.3,
         base64: true,
         exif: false
         };
