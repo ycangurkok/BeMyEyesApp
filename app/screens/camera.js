@@ -66,7 +66,6 @@ const CameraComponent = ({ onNavigate }) => {
         };
         let image = await cameraRef.current.takePictureAsync(options);
         setImage(image);
-        console.log(details);
     }
 
     const saveImage = async () => {
