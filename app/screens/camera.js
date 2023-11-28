@@ -60,12 +60,13 @@ const CameraComponent = ({ onNavigate }) => {
 
     let takePicture = async () => {
         let options = {
-        quality: 1,
+        quality: 0.3,
         base64: true,
         exif: false
         };
         let image = await cameraRef.current.takePictureAsync(options);
         setImage(image);
+        console.log(details);
     }
 
     const saveImage = async () => {
