@@ -3,7 +3,7 @@ import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'react-native';
 
-function FirstPage({ onNavigate }) {
+function WelcomePage() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,14 +15,6 @@ function FirstPage({ onNavigate }) {
 
   const openSignIn = () => {
     navigation.navigate('SignIn');
-  };
-
-  const handleEmailChange = (email) => {
-    setEmail(email);
-  };
-
-  const handlePasswordChange = (password) => {
-    setPassword(password);
   };
 
   const handleSignUp = () => {
@@ -128,4 +120,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default FirstPage;
+export default WelcomePage;

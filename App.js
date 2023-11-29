@@ -4,11 +4,12 @@ import CameraComponent from './app/screens/camera';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpPage from './app/screens/signUp';
-import FirstPage from './app/screens/firstScreen';
+import WelcomePage from './app/screens/welcome';
 import SignInPage from './app/screens/signIn';
 import HomePage from "./app/screens/home";
 import SettingsPage from "./app/screens/settings";
 import WhereAmIPage from "./app/screens/whereAmI";
+import Redirector from "./app/screens/redirector";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,15 +25,7 @@ export default function App() {
     try {
       // Retrieve the user's authentication token from AsyncStorage
       const token = await AsyncStorage.getItem('userToken');
-
-      // Check if the token exists
-      if (token) {
-        // User is signed in
-        setIsSignedIn(true);
-      } else {
-        // User is not signed in
-        setIsSignedIn(false);
-      }
+      setIsSignedIn(!!token);
     } catch (error) {
       console.error('Error checking sign-in status:', error);
     }
@@ -40,16 +33,18 @@ export default function App() {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-          <Stack.Screen name="First" options={{headerShown: false, title: "First"}} component={FirstPage} />
+      <Stack.Navigator screenOptions={{ animation: 'none' }}>
+          <Stack.Screen name="Redirector" options={{headerShown: false}} component={Redirector} />
 
+          <Stack.Screen name="Welcome" options={{headerShown: false, title: "Welcome"}} component={WelcomePage} />
+
+          <Stack.Screen name="Home" component={HomePage} options={{headerShown: false}}/>
+          
           <Stack.Screen name="SignUp" options={{headerShown: false, title: "Sign Up"}} component={SignUpPage} />
 
           <Stack.Screen name="SignIn" options={{headerShown: false, title: "Sign In"}} component={SignInPage} />
 
           <Stack.Screen name="Camera" options={{headerShown: false, title: "Camera"}} component={CameraComponent} />
-
-          <Stack.Screen name="Home"   component={HomePage} />
  
           <Stack.Screen name="Settings"   component={SettingsPage} />
 

@@ -26,7 +26,7 @@ function Settings() {
     // For example, navigate to the login screen
     await AsyncStorage.removeItem("userToken");
     setIsSignedIn(false);
-    navigation.navigate('First');
+    navigation.navigate('Welcome');
   };
 
   const handleOptionPress = (key) => {
