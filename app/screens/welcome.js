@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Image } from 'react-native';
 
 function WelcomePage() {
   const navigation = useNavigation();
