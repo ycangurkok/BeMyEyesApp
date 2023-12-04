@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#000000',
-    padding: 20,
+    padding: 15,
   },
   input: {
     height: 40,

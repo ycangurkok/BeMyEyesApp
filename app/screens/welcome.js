@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 15,
     backgroundColor: '#000000',
     marginBottom: 0,
   },
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center',
     fontStyle: 'normal',
+    padding: 5,
     //fontWeight: 400,
   },
   buttonText: {
@@ -100,6 +101,7 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
     fontStyle: 'normal',
+    padding: 5,
     //fontWeight: 400,
   },
   buttonSpacing: {
