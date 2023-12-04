@@ -1,8 +1,18 @@
 import React, { useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
+import BeMyEyesLogo from '../images/BeMyEyes.png';
+import CameraLogo from '../images/camera.png';
+import MoneyLogo from '../images/money.png';
+import NavigationLogo from '../images/navigation.png';
+import VideoLogo from '../images/video.png';
+import TextLogo from '../images/text.png';
+import HatLogo from '../images/hat.png';
+import HomeLogo from '../images/home.png';
+import ReplayLogo from '../images/replay.png';
+import SettingsLogo from '../images/settings.png';
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
@@ -41,45 +51,60 @@ const HomePage = ({ onNavigate }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>BeMyEyes</Text>
+
+    
+    
+      <Image source={BeMyEyesLogo} style={styles.image} />
+      
 
       <View style={styles.row}>
 
         <TouchableOpacity onPress={() => openCamera('Describe Scene')} style={styles.button}>
+        <Image source={CameraLogo} style={styles.imageLogo} />
           <Text style={styles.buttonText}>Describe Scene</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => openCamera('Count Money')} style={styles.button}>
+        <Image source={MoneyLogo} style={styles.moneyImageLogo} />
           <Text style={styles.buttonText}>Count Money</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.row}>
         <TouchableOpacity onPress={() => openWhereAmI('Where Am I?')} style={styles.button}>
+        <Image source={NavigationLogo} style={styles.navigationImageLogo} />
           <Text style={styles.buttonText}>Where Am I?</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => openCamera('Video Capture')} style={styles.button}>
+        <Image source={VideoLogo} style={styles.videoImageLogo} />
           <Text style={styles.buttonText}>Video Capture</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.row}>
         <TouchableOpacity onPress={() => openCamera('Read Text')} style={styles.button}>
+        <Image source={TextLogo} style={styles.navigationImageLogo} />
           <Text style={styles.buttonText}>Read Text</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => openCamera('Smart Hat')} style={styles.button}>
-          <Text style={styles.buttonText}>Smart Hat</Text>
+        <Image source={HatLogo} style={styles.hatImageLogo} />
+          <Text style={styles.hatButtonText}>Smart Hat</Text>
         </TouchableOpacity>
+        
       </View>
+      
+
 
       <View style={styles.footer}>
-   
+      
         <TouchableOpacity 
+        
           style={styles.footerButton} 
           onPress={openHome}
         >
+          <Image source={HomeLogo} style={styles.homeImageLogo} />
           <Text style={styles.footerButtonText}>Home</Text>
         </TouchableOpacity>
 
@@ -87,6 +112,7 @@ const HomePage = ({ onNavigate }) => {
           style={styles.footerButton} 
           onPress={replaySound}
         >
+          <Image source={ReplayLogo} style={styles.homeImageLogo} />
           <Text style={styles.footerButtonText}>Replay Sound</Text>
         </TouchableOpacity>
 
@@ -94,6 +120,7 @@ const HomePage = ({ onNavigate }) => {
           style={styles.footerButton} 
           onPress={openSettings}
         >
+          <Image source={SettingsLogo} style={styles.settingsImageLogo} />
           <Text style={styles.footerButtonText}>Settings</Text>
         </TouchableOpacity>
       </View>
@@ -118,12 +145,13 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
   button: {
-    borderColor: 'white',
+    borderColor: 'black',
     borderWidth: 1,
     padding: 10,
     width: 180,
     height: 72,
     borderRadius: 15,
+    marginLeft: 15,
     
   },
   footerButton: {
@@ -133,7 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5, // Butonlar arasında boşluk
     borderWidth: 1, // Kenarlık genişliği
-    borderColor: 'white', // Kenarlık rengi (beyaz)
+    borderColor: 'black', // Kenarlık rengi (beyaz)
   },
   footerButtonText: {
     color: 'white', // Metin rengi
@@ -162,9 +190,68 @@ const styles = StyleSheet.create({
     fontSize: 44,
     color: 'white',
   },
+  image: {
+    width: 274,
+    height: 207,
+    marginBottom: 20, // add some margin if needed
+    marginTop: 10,
+
+  },
+  imageLogo: {
+    width: 87,
+    height: 72,
+    marginBottom: 20, // add some margin if needed
+    marginLeft: 30,
+  },
+  moneyImageLogo: {
+    width: 95,
+    height: 92,
+    marginLeft: 27,
+  },
+  navigationImageLogo: {
+    width: 95,
+    height: 92,
+    marginLeft: 10,
+    marginBottom: 4,
+  },
+  videoImageLogo: {
+    width: 95,
+    height: 92,
+    marginLeft: 20,
+    marginBottom: 4,
+  },
+  hatImageLogo: {
+    width: 125,
+    height: 92,
+    marginLeft: -10,
+    marginBottom: 4,
+  },
+  homeImageLogo: {
+    width: 46,
+    height: 42,
+    marginLeft: 24,
+    marginBottom: -4,
+  },
+  settingsImageLogo: {
+    width: 45,
+    height: 42,
+    marginLeft: 24,
+    marginBottom: 4,
+  },
+  lineStyle: {
+    height: 1, // Çizginin kalınlığı
+    backgroundColor: 'white', // Çizginin rengi
+    width: '100%', // Genişlik, tüm ekranı kaplasın
+    marginBottom: 100, // Altındaki içeriğe boşluk bırak
+  },
   buttonText: {
     fontSize: 24,
     color: 'white',
+  },
+  hatButtonText: {
+    fontSize: 24,
+    color: 'white',
+    marginLeft: 10,
   },
 });
 

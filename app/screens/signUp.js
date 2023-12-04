@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#000000',
-    padding: 20,
+    padding: 15,
   },
   input: {
     height: 40,
@@ -162,7 +162,8 @@ const styles = StyleSheet.create({
   signUpLink: {
     justifyContent: 'center',
     marginBottom: 10,
-    backgroundColor: '#58CECE'
+    backgroundColor: '#58CECE',
+    padding: 15,
   },
   buttonText: {
     fontSize: 24,
