@@ -78,26 +78,34 @@ const CameraComponent = ({ onNavigate }) => {
                     name: 'photo.jpg',
                 });
     
-                const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/describeImage', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    body: formData,
-                });
-    
-                if (response.ok) {
-                    console.log('Image uploaded successfully');
-                    const responseData = await response.json();
-                    lastSpoken = String(responseData);
-                    await AsyncStorage.setItem('lastSpoken', lastSpoken);
-                    Speech.speak(lastSpoken);
-                    // Handle success, e.g., show a success message
+                const endpointName = route.params?.endpointName
+                
+                if (endpointName=='describeImage') {
+                    const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        body: formData,
+                    });
+        
+                    if (response.ok) {
+                        console.log('Image uploaded successfully');
+                        const responseData = await response.json();
+                        lastSpoken = String(responseData);
+                        await AsyncStorage.setItem('lastSpoken', lastSpoken);
+                        Speech.speak(lastSpoken);
+                        // Handle success, e.g., show a success message
+                    } else {
+                        console.error('Failed to upload image');
+                        console.log(response);
+                        // Handle failure, e.g., show an error message
+                    }
+                } else if (endpointName=='wordsImage') {
+                    // read text özelliği trigger edilirse
                 } else {
-                    console.error('Failed to upload image');
-                    console.log(response);
-                    // Handle failure, e.g., show an error message
+                    
                 }
             } catch (error) {
                 console.error('Error uploading image', error);

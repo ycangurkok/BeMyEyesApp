@@ -27,8 +27,8 @@ const HomePage = ({ onNavigate }) => {
   }, [navigation]);
 
  
-  const openCamera = (headerTitle) => {
-    navigation.navigate('Camera', { headerTitle });
+  const openCamera = (headerTitle, endpointName) => {
+    navigation.navigate('Camera', { headerTitle, endpointName });
   };
 
   const openWhereAmI = () => {
@@ -59,7 +59,7 @@ const HomePage = ({ onNavigate }) => {
 
       <View style={styles.row}>
 
-        <TouchableOpacity onPress={() => openCamera('Describe Scene')} style={styles.button}>
+        <TouchableOpacity onPress={() => openCamera('Describe Scene', 'describeImage')} style={styles.button}>
         <Image source={CameraLogo} style={styles.imageLogo} />
           <Text style={styles.buttonText}>Describe Scene</Text>
         </TouchableOpacity>
