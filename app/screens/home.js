@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
+import { Audio } from 'expo-av';
 import BeMyEyesLogo from '../images/BeMyEyes.png';
 import CameraLogo from '../images/camera.png';
 import MoneyLogo from '../images/money.png';
@@ -17,6 +18,7 @@ import VoiceLogo from "../images/microphone.png";
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
+  const [recording, setRecording] = React.useState();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -26,6 +28,38 @@ const HomePage = ({ onNavigate }) => {
       headerTintColor: '#fff', // Optional: Set the header text and icons color
     });
   }, [navigation]);
+
+  async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      console.log('Starting recording..');
+      const { recording } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+    await Audio.setAudioModeAsync(
+      {
+        allowsRecordingIOS: false,
+      }
+    );
+    const uri = recording.getURI();
+    console.log('Recording stopped and stored at', uri);
+  }
 
  
   const openCamera = (headerTitle, endpointName) => {
@@ -111,10 +145,10 @@ const HomePage = ({ onNavigate }) => {
 
         <TouchableOpacity 
           style={styles.footerButton} 
-          onPress={replaySound}
+          onPress={recording ? stopRecording : startRecording}
         >
           <Image source={VoiceLogo} style={styles.homeImageLogo} />
-          <Text style={styles.footerButtonText}>Voice</Text>
+          <Text style={styles.footerButtonText}>{recording ? "Stop" : "Voice"}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
