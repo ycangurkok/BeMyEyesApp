@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking, Share } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import * as Location from "expo-location";
 
 function WhereAmI({ onNavigate }) {
