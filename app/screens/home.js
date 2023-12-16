@@ -13,6 +13,7 @@ import HatLogo from '../images/hat.png';
 import HomeLogo from '../images/home.png';
 import ReplayLogo from '../images/replay.png';
 import SettingsLogo from '../images/settings.png';
+import VoiceLogo from "../images/microphone.png";
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
@@ -106,6 +107,14 @@ const HomePage = ({ onNavigate }) => {
         >
           <Image source={HomeLogo} style={styles.homeImageLogo} />
           <Text style={styles.footerButtonText}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.footerButton} 
+          onPress={replaySound}
+        >
+          <Image source={VoiceLogo} style={styles.homeImageLogo} />
+          <Text style={styles.footerButtonText}>Voice</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
