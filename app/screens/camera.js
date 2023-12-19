@@ -7,6 +7,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import FormData from "form-data";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
+import HomeLogo from '../images/home.png';
+import ReplayLogo from '../images/replay.png';
+import SettingsLogo from '../images/settings.png';
+import FlashLogo from '../images/flash.png';
+import TurnCameraLogo from '../images/turnCamera.png';
 
 const CameraComponent = ({ onNavigate }) => {
     const navigation = useNavigation();
@@ -20,7 +25,24 @@ const CameraComponent = ({ onNavigate }) => {
     const [image, setImage] = useState(null);
     let lastSpoken = "";
 
+    const [headerTitle, setHeaderTitle] = useState('Default Camera');
+
+
+
     useLayoutEffect(() => {
+      navigation.setOptions({
+        headerTitle: headerTitle,
+        headerStyle: {
+            backgroundColor: '#000', // Set the header background color
+          },
+          headerTintColor: '#fff', // Optional: Set the header text and icons color
+      });
+    }, [navigation, headerTitle]);
+
+
+
+
+    /*useLayoutEffect(() => {
         const headerTitle = route.params?.headerTitle || 'Default Camera'; // Parametre olarak verilen başlık, yoksa varsayılan bir başlık
         navigation.setOptions({
             headerTitle: headerTitle, // Header başlığı
@@ -30,7 +52,7 @@ const CameraComponent = ({ onNavigate }) => {
             headerTintColor: '#fff', // Header metin ve ikon rengi
             // Burada daha fazla header ayarı yapabilirsiniz
         });
-    }, [navigation, route.params?.headerTitle]);
+    }, [navigation, route.params?.headerTitle]);*/
 
     useEffect(() => {
         (async () => {
@@ -43,7 +65,17 @@ const CameraComponent = ({ onNavigate }) => {
             setCameraPermission(false);
         }
         })();
-    }, []);
+        const newHeaderTitle = route.params?.endpointName || 'Default Camera';
+        let title='';
+        if (newHeaderTitle=='describeImage') {
+            title = 'DESCRIBE SCENE'
+        }
+        if (newHeaderTitle=='describeImage') {
+            title = 'DESCRIBE SCENE'
+        }
+        console.log("New Header Title:", title); // Debug log
+        setHeaderTitle(title);
+        }, [route.params?.endpointName]);
 
     const openHome = () => {
         navigation.navigate('Home');
@@ -67,6 +99,7 @@ const CameraComponent = ({ onNavigate }) => {
         let image = await cameraRef.current.takePictureAsync(options);
         setImage(image);
     }
+  
 
     const saveImage = async () => {
         if (image) {
@@ -78,26 +111,36 @@ const CameraComponent = ({ onNavigate }) => {
                     name: 'photo.jpg',
                 });
     
-                const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/describeImage', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    body: formData,
-                });
-    
-                if (response.ok) {
-                    console.log('Image uploaded successfully');
-                    const responseData = await response.json();
-                    lastSpoken = String(responseData);
-                    await AsyncStorage.setItem('lastSpoken', lastSpoken);
-                    Speech.speak(lastSpoken);
-                    // Handle success, e.g., show a success message
+                endpointName = route.params?.endpointName
+                console.log(endpointName)
+                
+                if (endpointName=='describeImage') {
+                    const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        body: formData,
+                        
+                    });
+        
+                    if (response.ok) {
+                        console.log('Image uploaded successfully');
+                        const responseData = await response.json();
+                        lastSpoken = String(responseData);
+                        await AsyncStorage.setItem('lastSpoken', lastSpoken);
+                        Speech.speak(lastSpoken);
+                        // Handle success, e.g., show a success message
+                    } else {
+                        console.error('Failed to upload image');
+                        console.log(response);
+                        // Handle failure, e.g., show an error message
+                    }
+                } else if (endpointName=='wordsImage') {
+                    // read text özelliği trigger edilirse
                 } else {
-                    console.error('Failed to upload image');
-                    console.log(response);
-                    // Handle failure, e.g., show an error message
+                    
                 }
             } catch (error) {
                 console.error('Error uploading image', error);
@@ -115,12 +158,9 @@ const CameraComponent = ({ onNavigate }) => {
     };
 
     return (
+        
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>{route.headerTitle}</Text>
-                {/* Header içinde diğer bileşenler veya butonlar eklenebilir */}
-            </View>
-
+       
             {!image ? (
                 <Camera
                     style={styles.camera}
@@ -128,19 +168,6 @@ const CameraComponent = ({ onNavigate }) => {
                     flashMode={flash}
                     ref={cameraRef}
                     >
-                    <View style={styles.button}>
-                        <Button icon={'retweet'} onPress={() => {
-                        setType(type === CameraType.back ? CameraType.front : CameraType.back)
-                        }}/>
-                        <Button icon={'flash'} 
-                        color={flash === 'off' ? 'gray' : '#f1f1f1'}
-                        onPress={() => {
-                            setFlash(flash === 'off' 
-                            ? 'on'
-                            : 'off'
-                            )
-                        }}/>
-                    </View>
                 </Camera>
             ) : (
                 <Image source={{ uri: "data:image/jpg;base64," + image.base64 }} style={styles.camera} />
@@ -148,21 +175,41 @@ const CameraComponent = ({ onNavigate }) => {
             <View>
                 {image ? 
                 <View style={styles.button}>
-                <Button title={"Re-take"} icon={"retweet"} onPress={() => setImage(null)}/>
-                <Button title={"Save"} icon={"check"} onPress={saveImage}/>
+                    <Button title={"Re-take"} icon={"retweet"} onPress={() => setImage(null)}/>
+                    <Button title={"Save"} icon={"check"} onPress={saveImage}/>
                 </View>
                 :
-                <Button title={'Take a picture'} icon="camera" onPress={takePicture} />
+                <View style={styles.takePicButton}>
+                   
+             
+                        <Button icon={'retweet'} onPress={() => {
+                        setType(type === CameraType.back ? CameraType.front : CameraType.back)
+                        }}/>
+                        <Button title={'Take a picture'} icon="camera" onPress={takePicture}/>
+
+                        <Button icon={'flash'} 
+                            color={flash === 'off' ? 'gray' : '#f1f1f1'}
+                            onPress={() => {
+                                setFlash(flash === 'off' 
+                                ? 'on'
+                                : 'off'
+                                )
+                            }}
+                        />
+                   
+                </View>
                 
                 }
             </View>
 
             <View style={styles.footer}>
-   
+        
                 <TouchableOpacity 
+                
                 style={styles.footerButton} 
                 onPress={openHome}
                 >
+                <Image source={HomeLogo} style={styles.homeImageLogo} />
                 <Text style={styles.footerButtonText}>Home</Text>
                 </TouchableOpacity>
 
@@ -170,6 +217,7 @@ const CameraComponent = ({ onNavigate }) => {
                 style={styles.footerButton} 
                 onPress={replaySound}
                 >
+                <Image source={ReplayLogo} style={styles.homeImageLogo} />
                 <Text style={styles.footerButtonText}>Replay Sound</Text>
                 </TouchableOpacity>
 
@@ -177,6 +225,7 @@ const CameraComponent = ({ onNavigate }) => {
                 style={styles.footerButton} 
                 onPress={openSettings}
                 >
+                <Image source={SettingsLogo} style={styles.settingsImageLogo} />
                 <Text style={styles.footerButtonText}>Settings</Text>
                 </TouchableOpacity>
             </View>
@@ -190,29 +239,38 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#000',
         justifyContent: 'center',
-        paddingBottom: 20,
+        paddingBottom: 10,
     },
     camera: {
         flex: 1,
-        borderRadius: 20,
+        borderRadius: 10,
         height: 300, // Sabit bir yükseklik değeri
     },
     header: {
-        height: 20, // Header'ın yüksekliği
-        alignItems: 'flex-end', // İçeriği yatay olarak ortala
-        justifyContent: 'flex-end', // İçeriği dikey olarak ortala
+        height: 50, // Header'ın yüksekliği
+        alignItems: 'center', // İçeriği yatay olarak ortala
+        justifyContent: 'center', // İçeriği dikey olarak ortala
+
       },
       headerText: {
-        justifyContent: 'flex-end',
-        color: '#000', // Metin rengi
+        textAlign: 'center',
+        color: 'white', // Metin rengi
         fontSize: 20, // Metin boyutu
         fontWeight: 'bold', // Metin kalınlığı
+        padding: 10,
       },
       button: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 20,
         backgroundColor: 'black',
+      },
+      takePicButton: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 60,
+        backgroundColor: 'black',
+  
       },
       footerButton: {
         flex: 1, // Eşit genişlikte butonlar
@@ -221,7 +279,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginHorizontal: 5, // Butonlar arasında boşluk
         borderWidth: 1, // Kenarlık genişliği
-        borderColor: 'white', // Kenarlık rengi (beyaz)
+        borderColor: 'black', // Kenarlık rengi (beyaz)
       },
       footerButtonText: {
         color: 'white', // Metin rengi
@@ -229,6 +287,7 @@ const styles = StyleSheet.create({
         textAlign: 'center', // Metni ortala
       },
       footer: {
+        position: 'absolute', // Footer'ı sayfanın altına sabitle
         bottom: 0, // En alta yerleştir
         flexDirection: 'row', // Butonları yan yana sırala
         width: '100%',
@@ -240,6 +299,18 @@ const styles = StyleSheet.create({
       footerText: {
         color: 'white', // Metin rengi
         fontSize: 16, // Metin boyutu
+      },
+      homeImageLogo: {
+        width: 46,
+        height: 42,
+        marginLeft: 24,
+        marginBottom: -4,
+      },
+      settingsImageLogo: {
+        width: 45,
+        height: 42,
+        marginLeft: 24,
+        marginBottom: 4,
       },
   
 });
