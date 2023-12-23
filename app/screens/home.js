@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
-import BeMyEyesLogo from '../images/BeMyEyes.png';
+import BeMyEyesLogo from '../images/BeMyEyesNew2.jpeg';
 import CameraLogo from '../images/camera.png';
 import MoneyLogo from '../images/money.png';
 import NavigationLogo from '../images/navigation.png';
@@ -59,12 +59,13 @@ const HomePage = ({ onNavigate }) => {
 
       <View style={styles.row}>
 
-        <TouchableOpacity onPress={() => openCamera('Describe Scene', 'describeImage')} style={styles.button}>
+        <TouchableOpacity onPress={() => openCamera('Describe Scene','describeImage')} style={styles.button}>
+
         <Image source={CameraLogo} style={styles.imageLogo} />
           <Text style={styles.buttonText}>Describe Scene</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => openCamera('Count Money')} style={styles.button}>
+        <TouchableOpacity onPress={() => openCamera('Count Money', 'moneyPredict')} style={styles.button}>
         <Image source={MoneyLogo} style={styles.moneyImageLogo} />
           <Text style={styles.buttonText}>Count Money</Text>
         </TouchableOpacity>
@@ -83,7 +84,7 @@ const HomePage = ({ onNavigate }) => {
       </View>
 
       <View style={styles.row}>
-        <TouchableOpacity onPress={() => openCamera('Read Text')} style={styles.button}>
+        <TouchableOpacity onPress={() => openCamera('Read Text', 'wordsImage')} style={styles.button}>
         <Image source={TextLogo} style={styles.navigationImageLogo} />
           <Text style={styles.buttonText}>Read Text</Text>
         </TouchableOpacity>
