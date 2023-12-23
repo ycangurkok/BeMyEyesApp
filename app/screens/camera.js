@@ -199,7 +199,7 @@ const CameraComponent = ({ onNavigate }) => {
                         }}/>
                         <Button title={'Take a picture'} icon="camera" onPress={takePicture}/>
 
-                        <Button title={flashMode === Camera.Constants.FlashMode.on ? "Flash Aç" : "Flash Kapat"} onPress={toggleFlash} />
+                        <Button title={flashMode === Camera.Constants.FlashMode.on ? "Flash Kapat" : "Flash Aç"} onPress={toggleFlash} />
                    
                 </View>
                 
