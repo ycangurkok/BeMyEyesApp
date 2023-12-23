@@ -19,7 +19,7 @@ const CameraComponent = ({ onNavigate }) => {
 
     const [cameraPermission, setCameraPermission] = useState(null);
     const [type, setType] = useState(Camera.Constants.Type.back);
-    const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
+    const [flashMode, setFlashMode] = useState(Camera.Constants.FlashMode.off);
     const cameraRef = useRef(); // Use useRef to create a ref
     const [isCameraOpen, setIsCameraOpen] = useState(false); // Track whether the camera is open
     const [image, setImage] = useState(null);
@@ -70,8 +70,11 @@ const CameraComponent = ({ onNavigate }) => {
         if (newHeaderTitle=='describeImage') {
             title = 'DESCRIBE SCENE'
         }
-        if (newHeaderTitle=='describeImage') {
-            title = 'DESCRIBE SCENE'
+        else if (newHeaderTitle=='moneyPredict') {
+            title = 'COUNT MONEY'
+        }
+        else if (newHeaderTitle=='wordsImage') {
+            title = 'READ TEXT'
         }
         console.log("New Header Title:", title); // Debug log
         setHeaderTitle(title);
@@ -99,7 +102,16 @@ const CameraComponent = ({ onNavigate }) => {
         let image = await cameraRef.current.takePictureAsync(options);
         setImage(image);
     }
-  
+    const toggleFlash = () => {
+        
+        setFlashMode(prevMode => 
+            prevMode === Camera.Constants.FlashMode.off 
+            ? Camera.Constants.FlashMode.on 
+            : Camera.Constants.FlashMode.off
+        );
+      
+    };
+
 
     const saveImage = async () => {
         if (image) {
@@ -165,7 +177,7 @@ const CameraComponent = ({ onNavigate }) => {
                 <Camera
                     style={styles.camera}
                     type={type}
-                    flashMode={flash}
+                    flashMode={flashMode}
                     ref={cameraRef}
                     >
                 </Camera>
@@ -174,7 +186,7 @@ const CameraComponent = ({ onNavigate }) => {
             )}
             <View>
                 {image ? 
-                <View style={styles.button}>
+                <View style={styles.takePicButton}>
                     <Button title={"Re-take"} icon={"retweet"} onPress={() => setImage(null)}/>
                     <Button title={"Save"} icon={"check"} onPress={saveImage}/>
                 </View>
@@ -183,19 +195,11 @@ const CameraComponent = ({ onNavigate }) => {
                    
              
                         <Button icon={'retweet'} onPress={() => {
-                        setType(type === CameraType.back ? CameraType.front : CameraType.back)
+                            setType(type === CameraType.back ? CameraType.front : CameraType.back)
                         }}/>
                         <Button title={'Take a picture'} icon="camera" onPress={takePicture}/>
 
-                        <Button icon={'flash'} 
-                            color={flash === 'off' ? 'gray' : '#f1f1f1'}
-                            onPress={() => {
-                                setFlash(flash === 'off' 
-                                ? 'on'
-                                : 'off'
-                                )
-                            }}
-                        />
+                        <Button title={flashMode === Camera.Constants.FlashMode.on ? "Flash Aç" : "Flash Kapat"} onPress={toggleFlash} />
                    
                 </View>
                 

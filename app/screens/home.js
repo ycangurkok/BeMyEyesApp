@@ -64,7 +64,7 @@ const HomePage = ({ onNavigate }) => {
           <Text style={styles.buttonText}>Describe Scene</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => openCamera('Count Money')} style={styles.button}>
+        <TouchableOpacity onPress={() => openCamera('Count Money', 'moneyPredict')} style={styles.button}>
         <Image source={MoneyLogo} style={styles.moneyImageLogo} />
           <Text style={styles.buttonText}>Count Money</Text>
         </TouchableOpacity>
@@ -83,7 +83,7 @@ const HomePage = ({ onNavigate }) => {
       </View>
 
       <View style={styles.row}>
-        <TouchableOpacity onPress={() => openCamera('Read Text')} style={styles.button}>
+        <TouchableOpacity onPress={() => openCamera('Read Text', 'wordsImage')} style={styles.button}>
         <Image source={TextLogo} style={styles.navigationImageLogo} />
           <Text style={styles.buttonText}>Read Text</Text>
         </TouchableOpacity>
