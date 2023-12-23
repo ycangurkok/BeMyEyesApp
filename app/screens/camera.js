@@ -123,8 +123,12 @@ const CameraComponent = ({ onNavigate }) => {
                     name: 'photo.jpg',
                 });
     
+
                 endpointName = route.params?.endpointName
                 console.log(endpointName)
+
+                const endpointName = route.params?.endpointName
+
                 
                 if (endpointName=='describeImage') {
                     const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
@@ -134,8 +138,7 @@ const CameraComponent = ({ onNavigate }) => {
                             'Content-Type': 'multipart/form-data',
                         },
                         body: formData,
-                        
-                    });
+     });
         
                     if (response.ok) {
                         console.log('Image uploaded successfully');

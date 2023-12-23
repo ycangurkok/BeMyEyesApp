@@ -60,6 +60,7 @@ const HomePage = ({ onNavigate }) => {
       <View style={styles.row}>
 
         <TouchableOpacity onPress={() => openCamera('Describe Scene','describeImage')} style={styles.button}>
+
         <Image source={CameraLogo} style={styles.imageLogo} />
           <Text style={styles.buttonText}>Describe Scene</Text>
         </TouchableOpacity>
