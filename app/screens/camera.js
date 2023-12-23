@@ -122,16 +122,10 @@ const CameraComponent = ({ onNavigate }) => {
                     type: 'image/jpg',
                     name: 'photo.jpg',
                 });
-    
-
-         
-          
 
                 let endpointName = route.params?.endpointName
                 console.log(endpointName)
-
-                
-                if (endpointName=='describeImage') {
+ 
                     const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
                         method: 'POST',
                         headers: {
@@ -153,52 +147,8 @@ const CameraComponent = ({ onNavigate }) => {
                         console.log(response);
                         // Handle failure, e.g., show an error message
                     }
-                } else if (endpointName=='wordsImage') {
-                    const responseWordsImage = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'multipart/form-data',
-                        },
-                        body: formData,
-                    });
-                    if (responseWordsImage.ok) {
-                        console.log('Image uploaded successfully');
-                        const responseData = await responseWordsImage.json();
-                        console.log(responseData)
-                        lastSpoken = String(responseData);
-                        await AsyncStorage.setItem('lastSpoken', lastSpoken);
-                        Speech.speak(lastSpoken);
-                        // Handle success, e.g., show a success message
-                    } else {
-                        console.error('Failed to upload image');
-                        console.log(responseWordsImage);
-                        // Handle failure, e.g., show an error message
-                    }
-                } else if (endpointName=='moneyPredict'){
-                    const responseMoneyPredict = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'multipart/form-data',
-                        },
-                        body: formData,
-                    });
-                    if (responseMoneyPredict.ok) {
-                        console.log('Image uploaded successfully');
-                        const responseData = await responseMoneyPredict.json();
-                        console.log(responseData)
-                        lastSpoken = String(responseData);
-                        await AsyncStorage.setItem('lastSpoken', lastSpoken);
-                        Speech.speak(lastSpoken);
-                        // Handle success, e.g., show a success message
-                    } else {
-                        console.error('Failed to upload image');
-                        console.log(responseMoneyPredict);
-                        // Handle failure, e.g., show an error message
-                    }
-                    
-                }
+               
+                  
             } catch (error) {
                 console.error('Error uploading image', error);
                 // Handle error, e.g., show an error
