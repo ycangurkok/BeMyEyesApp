@@ -51,12 +51,7 @@ const HomePage = ({ onNavigate }) => {
 
   return (
     <View style={styles.container}>
-
-    
-    
-
-
-     
+   
       <Image source={BeMyEyesLogo} style={styles.image} />
 
       <View style={styles.row}>
@@ -97,13 +92,13 @@ const HomePage = ({ onNavigate }) => {
         </TouchableOpacity>
         
       </View>
-      
-      <View>
+    
+      <View style={styles.lineContainer}>
         <View style={styles.lineStyle} />
       </View>
-      
 
       <View style={styles.footer}>
+      
       
         <TouchableOpacity 
         
@@ -143,7 +138,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
     alignItems: 'center',
-    padding: 20,
+    padding: 15,
   },
   mainHeader: {
     justifyContent: 'center',
@@ -262,12 +257,16 @@ const styles = StyleSheet.create({
   lineStyle: {
     height: 1, // Çizginin kalınlığı
     backgroundColor: 'white', // Çizginin rengi
-    width: '100%', // Genişlik, ekranın %90'ını kaplasın
+    width: '100%', // Genişlik, ekranın %100'ünü kaplasın
     alignSelf: 'center', // Çizgiyi ekranda ortala
-    marginVertical: 5, // Üst ve altında boşluk bırak
+    marginVertical: height * 0.01, // Üst ve altında 20 piksel boşluk bırak
   },
-  
 
+  
+  lineContainer: {
+    backgroundColor: 'black', // Arka plan rengini siyah yap
+    width: '100%', // Genişlik, ekranın %100'ünü kaplasın
+  },
 
 
   cameraImageText: {
