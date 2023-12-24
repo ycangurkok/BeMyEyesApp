@@ -10,7 +10,10 @@ import * as Speech from "expo-speech";
 import HomeLogo from '../images/home.png';
 import ReplayLogo from '../images/replay.png';
 import SettingsLogo from '../images/settings.png';
-import FlashLogo from '../images/flash.png';
+import FlashOnLogo from '../images/flash.png';
+import FlashOffLogo from '../images/flashOff.png';
+import TakePic1 from '../images/takePic1.png';
+import TakePic2 from '../images/takePic2.png';
 import TurnCameraLogo from '../images/turnCamera.png';
 
 const CameraComponent = ({ onNavigate }) => {
@@ -39,20 +42,6 @@ const CameraComponent = ({ onNavigate }) => {
       });
     }, [navigation, headerTitle]);
 
-
-
-
-    /*useLayoutEffect(() => {
-        const headerTitle = route.params?.headerTitle || 'Default Camera'; // Parametre olarak verilen başlık, yoksa varsayılan bir başlık
-        navigation.setOptions({
-            headerTitle: headerTitle, // Header başlığı
-            headerStyle: {
-                backgroundColor: 'white', // Header arka plan rengi
-            },
-            headerTintColor: '#fff', // Header metin ve ikon rengi
-            // Burada daha fazla header ayarı yapabilirsiniz
-        });
-    }, [navigation, route.params?.headerTitle]);*/
 
     useEffect(() => {
         (async () => {
@@ -137,16 +126,42 @@ const CameraComponent = ({ onNavigate }) => {
         
                     if (response.ok) {
                         console.log('Image uploaded successfully');
-                        const responseData = await response.json();
+                        let responseData = await response.json();
+                        if (endpointName=='wordsImage') {
+                        
+                            const keys = Object.keys(responseData);
+                            console.log(keys)
+                            responseData = keys
+                 
+                            
+                            
+                        }
+
+                     
+                        console.log(responseData)
                         lastSpoken = String(responseData);
                         await AsyncStorage.setItem('lastSpoken', lastSpoken);
-                        Speech.speak(lastSpoken);
-                        // Handle success, e.g., show a success message
+                  
+
+                        const speak = () => {
+                            const options = {
+                              language: "en-US",
+                            };
+                          
+                            Speech.speak(lastSpoken, options);
+                          };
+                          
+                          speak();
+                        
+                       
+                         
+                        
                     } else {
                         console.error('Failed to upload image');
                         console.log(response);
-                        // Handle failure, e.g., show an error message
                     }
+
+                    
                
                   
             } catch (error) {
@@ -189,13 +204,36 @@ const CameraComponent = ({ onNavigate }) => {
                 <View style={styles.takePicButton}>
                    
              
-                        <Button icon={'retweet'} onPress={() => {
-                            setType(type === CameraType.back ? CameraType.front : CameraType.back)
-                        }}/>
-                        <Button title={'Take a picture'} icon="camera" onPress={takePicture}/>
+               
+                        <TouchableOpacity 
+                            style={styles.homeImageLogo}
+                            onPress={() => {
+                                setType(type === CameraType.back ? CameraType.front : CameraType.back);
+                            }}
+                            >
+                            <Image source={TurnCameraLogo} style={styles.homeImageLogo} />
+                        </TouchableOpacity>
 
-                        <Button title={flashMode === Camera.Constants.FlashMode.on ? "Flash Kapat" : "Flash Aç"} onPress={toggleFlash} />
-                   
+
+
+                        <TouchableOpacity style={styles.homeImageLogo} onPress={takePicture}>
+                            <Image source={TakePic1} style={styles.homeImageLogo} />
+                            
+                        </TouchableOpacity>
+
+
+                        <TouchableOpacity 
+                            style={styles.homeImageLogo} 
+                            onPress={toggleFlash}
+                            >
+                            <Image 
+                                source={flashMode === Camera.Constants.FlashMode.on ? FlashOnLogo : FlashOffLogo} 
+                                style={styles.homeImageLogo} 
+                            />
+                            <Text style={styles.flashText}>
+                                {flashMode === Camera.Constants.FlashMode.on ? "Flash Kapat" : "Flash Aç"}
+                            </Text>
+                        </TouchableOpacity>
                 </View>
                 
                 }
