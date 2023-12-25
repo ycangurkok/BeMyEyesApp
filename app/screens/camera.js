@@ -16,6 +16,7 @@ import TakePic1 from '../images/takePic1.png';
 import TurnCameraLogo from '../images/turnCamera.png';
 import RetakeLogo from '../images/retake.png';
 import SaveLogo from '../images/save.png';
+import * as Haptics from 'expo-haptics';
 
 
 const CameraComponent = ({ onNavigate }) => {
@@ -68,15 +69,18 @@ const CameraComponent = ({ onNavigate }) => {
         }, [route.params?.endpointName]);
 
     const openHome = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         navigation.navigate('Home');
       };
     
       const replaySound = async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         const lastSpoken = await AsyncStorage.getItem("lastSpoken");
         Speech.speak(lastSpoken);
       };
     
       const openSettings = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         navigation.navigate('Settings');
       };
 
@@ -86,11 +90,12 @@ const CameraComponent = ({ onNavigate }) => {
         base64: true,
         exif: false
         };
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         let image = await cameraRef.current.takePictureAsync(options);
         setImage(image);
     }
     const toggleFlash = () => {
-        
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         setFlashMode(prevMode => 
             prevMode === Camera.Constants.FlashMode.off 
             ? Camera.Constants.FlashMode.on 
@@ -101,6 +106,7 @@ const CameraComponent = ({ onNavigate }) => {
 
 
     const saveImage = async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         if (image) {
             try {
                 const formData = new FormData();
@@ -204,6 +210,7 @@ const CameraComponent = ({ onNavigate }) => {
                     <TouchableOpacity 
                             style={styles.footerButton}
                             onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                                 setType(type === CameraType.back ? CameraType.front : CameraType.back);
                             }}
                         >

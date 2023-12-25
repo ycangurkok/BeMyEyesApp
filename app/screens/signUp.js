@@ -3,7 +3,7 @@ import { View, TextInput, Text, Button, StyleSheet, Dimensions, ImageBackground 
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackgroundLogo from '../images/background.png';
-
+import * as Haptics from 'expo-haptics';
 
 function SignUp({ onNavigate }) {
   const navigation = useNavigation();
@@ -14,6 +14,7 @@ function SignUp({ onNavigate }) {
   const [passwordError, setPasswordError] = useState(null);
 
   const openSignIn = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('SignIn');
   };
 
@@ -32,6 +33,7 @@ function SignUp({ onNavigate }) {
   };
 
   const handleSignUp = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     let e_error = false;
     let p_error = false;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

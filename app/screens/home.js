@@ -13,6 +13,7 @@ import HatLogo from '../images/hat.png';
 import HomeLogo from '../images/home.png';
 import ReplayLogo from '../images/replay.png';
 import SettingsLogo from '../images/settings.png';
+import * as Haptics from 'expo-haptics';
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
@@ -28,24 +29,29 @@ const HomePage = ({ onNavigate }) => {
 
  
   const openCamera = (headerTitle, endpointName) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Camera', { headerTitle, endpointName });
   };
 
   const openWhereAmI = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('WhereAmI');
   };
 
 
   const openHome = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Home');
   };
 
   const replaySound = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const lastSpoken = await AsyncStorage.getItem("lastSpoken");
     Speech.speak(lastSpoken);
   };
 
   const openSettings = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Settings');
   };
 

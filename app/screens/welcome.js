@@ -3,6 +3,7 @@ import { View, Text, Button, StyleSheet, TouchableOpacity, Dimensions, Image, Im
 import { useNavigation } from '@react-navigation/native';
 import BackgroundLogo from '../images/background.png';
 import TransparentText from '../images/transparentText.png';
+import * as Haptics from 'expo-haptics';
 
 
 function WelcomePage() {
@@ -12,10 +13,16 @@ function WelcomePage() {
   
 
   const openSignUp = () => {
-    navigation.navigate('SignUp');
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    //navigation.navigate('SignUp');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
   };
 
   const openSignIn = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('SignIn');
   };
 

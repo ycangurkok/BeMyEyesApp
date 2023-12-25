@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking, Share } from 
 import { useNavigation } from '@react-navigation/native';
 import MapView from 'react-native-maps';
 import * as Location from "expo-location";
+import * as Haptics from 'expo-haptics';
 
 function WhereAmI({ onNavigate }) {
   const navigation = useNavigation();
@@ -48,6 +49,7 @@ function WhereAmI({ onNavigate }) {
   }, [navigation]);
 
   const openMaps = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const url = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
@@ -58,6 +60,7 @@ function WhereAmI({ onNavigate }) {
   };
 
   const shareLocation = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const url = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
     await Share.share({message: `My location: ${url}`});
   }
