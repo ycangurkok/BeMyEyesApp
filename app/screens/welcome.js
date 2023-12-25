@@ -14,11 +14,7 @@ function WelcomePage() {
 
   const openSignUp = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    //navigation.navigate('SignUp');
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Home'}],
-    });
+    navigation.navigate('SignUp');
   };
 
   const openSignIn = () => {
