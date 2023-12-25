@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { View, FlatList, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 
 function Settings() {
   const navigation = useNavigation();
@@ -24,12 +25,14 @@ function Settings() {
   const handleLogout = async () => {
     // Implement logout functionality here
     // For example, navigate to the login screen
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await AsyncStorage.removeItem("userToken");
     setIsSignedIn(false);
     navigation.navigate('Welcome');
   };
 
   const handleOptionPress = (key) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (key === 'logout') {
       Alert.alert(
         'Confirmation',
