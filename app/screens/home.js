@@ -96,16 +96,20 @@ const HomePage = ({ onNavigate }) => {
         <Image source={HatLogo} style={styles.hatImageLogo} />
           <Text style={styles.hatButtonText}>Smart Hat</Text>
         </TouchableOpacity>
-        
-      </View>
-    
-      <View style={styles.lineContainer}>
-        <View style={styles.lineStyle} />
+
+      
+
+
       </View>
 
-      <View style={styles.footer}>
-      
-      
+
+      <View style={styles.lineStyle} />
+
+     
+
+      <View style={styles.footer}>      
+
+
         <TouchableOpacity 
         
           style={styles.footerButton} 
@@ -265,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Çizginin rengi
     width: '100%', // Genişlik, ekranın %100'ünü kaplasın
     alignSelf: 'center', // Çizgiyi ekranda ortala
-    marginVertical: height * 0.01, // Üst ve altında 20 piksel boşluk bırak
+    marginVertical: height * 0.029, // Üst ve altında 20 piksel boşluk bırak
   },
 
   
