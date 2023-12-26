@@ -18,6 +18,8 @@ import RetakeLogo from '../images/retake.png';
 import SaveLogo from '../images/save.png';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
+import GaleryLogo from '../images/galery.png';
+
 
 
 const CameraComponent = ({ onNavigate }) => {
@@ -275,7 +277,8 @@ const CameraComponent = ({ onNavigate }) => {
                     style={styles.footerButton} 
                     onPress={(pickImage)}
                 >
-                    <Text style={styles.footerButtonText}>Galeriden Seç</Text>
+                <Image source={GaleryLogo} style={styles.homeImageLogo} />
+                <Text style={styles.footerButtonText}>Galery</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
