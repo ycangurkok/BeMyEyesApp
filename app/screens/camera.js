@@ -17,6 +17,7 @@ import TurnCameraLogo from '../images/turnCamera.png';
 import RetakeLogo from '../images/retake.png';
 import SaveLogo from '../images/save.png';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 
 
 const CameraComponent = ({ onNavigate }) => {
@@ -31,6 +32,7 @@ const CameraComponent = ({ onNavigate }) => {
     const [image, setImage] = useState(null);
     let lastSpoken = "";
     const [headerTitle, setHeaderTitle] = useState('Default Camera');
+    const [modalVisible, setModalVisible] = useState(false);
 
     useLayoutEffect(() => {
       navigation.setOptions({
@@ -38,7 +40,7 @@ const CameraComponent = ({ onNavigate }) => {
         headerStyle: {
             backgroundColor: '#000', // Set the header background color
           },
-          headerTintColor: '#fff', // Optional: Set the header text and icons color
+          headerTintColor: '#fff',
       });
     }, [navigation, headerTitle]);
 
@@ -104,6 +106,25 @@ const CameraComponent = ({ onNavigate }) => {
       
     };
 
+    const pickImage = async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+        
+        if (!result.canceled) {
+            setImage({ uri: result.assets[0].uri });
+        }
+
+        console.log(result.assets[0].uri)
+    };
+
+
+    
+
 
     const saveImage = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -115,18 +136,21 @@ const CameraComponent = ({ onNavigate }) => {
                     type: 'image/jpg',
                     name: 'photo.jpg',
                 });
-
+            
                 let endpointName = route.params?.endpointName
                 console.log(endpointName)
+
+                console.log('FormData:', formData);
  
                     const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
                         method: 'POST',
                         headers: {
                             Accept: 'application/json',
-                            'Content-Type': 'multipart/form-data',
+                            //'Content-Type': 'multipart/form-data',
                         },
                         body: formData,
                     });
+                    
         
                     if (response.ok) {
                         console.log('Image uploaded successfully');
@@ -155,14 +179,15 @@ const CameraComponent = ({ onNavigate }) => {
                     } else {
                         console.error('Failed to upload image');
                         console.log(response);
+                        console.error('Image upload failed. Status Code:', response.status);
                     }              
             } catch (error) {
                 console.error('Error uploading image', error);
-                // Handle error, e.g., show an error
+                
             }   
         } else {
             console.warn('No image to save');
-            // Handle the case where there is no image to save
+
         }
     }
 
@@ -183,7 +208,8 @@ const CameraComponent = ({ onNavigate }) => {
                     >
                 </Camera>
             ) : (
-                <Image source={{ uri: "data:image/jpg;base64," + image.base64 }} style={styles.camera} />
+                // <Image source={{ uri: "data:image/jpg;base64," + image.base64 }} style={styles.camera} />
+                <Image source={{ uri: image.uri }} style={styles.camera} />
             )}
             <View style={styles.lineContainer}>
             {image ? 
@@ -246,6 +272,13 @@ const CameraComponent = ({ onNavigate }) => {
             <View style={styles.footer}>
         
                 <TouchableOpacity 
+                    style={styles.footerButton} 
+                    onPress={(pickImage)}
+                >
+                    <Text style={styles.footerButtonText}>Galeriden Seç</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
                 
                 style={styles.footerButton} 
                 onPress={openHome}
@@ -275,8 +308,8 @@ const CameraComponent = ({ onNavigate }) => {
     );
 }
 const { width, height } = Dimensions.get('window');
-const imageWidthRatio = 0.25; // Logolar için genişlik oranı
-const imageHeightRatio = 0.1; // Logolar için yükseklik oranı
+const imageWidthRatio = 0.25; 
+const imageHeightRatio = 0.1; 
 
 const styles = StyleSheet.create({
     container: {

@@ -23,7 +23,7 @@ const HomePage = ({ onNavigate }) => {
       headerStyle: {
         backgroundColor: '#000', // Set the header background color
       },
-      headerTintColor: '#fff', // Optional: Set the header text and icons color
+      headerTintColor: '#fff', 
     });
   }, [navigation]);
 
