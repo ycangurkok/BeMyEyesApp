@@ -29,6 +29,31 @@ const HomePage = ({ onNavigate }) => {
     });
   }, [navigation]);
 
+  function voiceCmd(text) {
+    text = text.replace(/\W/g, '');
+    text = text.toLowerCase();
+    console.log(text);
+
+    if(text.includes("describe")) {
+      navigation.navigate('Camera', { headerTitle: 'Describe Scene', endpointName: 'describeImage' });
+    }
+    else if(text.includes("count") || text.includes("money")) {
+      navigation.navigate('Camera', { headerTitle: 'Count Money', endpointName: 'moneyPredict' });
+    }
+    else if(text.includes("read") || text.includes("text")) {
+      navigation.navigate('Camera', { headerTitle: 'Read Text', endpointName: 'wordsImage' });
+    }
+    else if(text.includes("where")) {
+      navigation.navigate('WhereAmI');
+    }
+    else if(text.includes("help")) {
+      Speech.speak("You can say: describe, count money, read text, and where am i");
+    }
+    else {
+      Speech.speak("Sorry, I didn't get that. To see available commands, please say help");
+    }
+  }
+
   async function startRecording() {
     try {
       console.log('Requesting permissions..');
