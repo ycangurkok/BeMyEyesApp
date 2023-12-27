@@ -59,6 +59,32 @@ const HomePage = ({ onNavigate }) => {
     );
     const uri = recording.getURI();
     console.log('Recording stopped and stored at', uri);
+    const fileName = uri.match(/[^\/]+$/)[0];
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer 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");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    const formData = new FormData();
+    formData.append("file", {
+      uri: uri,
+      type: 'audio/mp4',
+      name: fileName,
+    });
+    formData.append("model", "whisper-1");
+    const endPointAddr = "https://api.openai.com/v1/audio/transcriptions";
+    const response = await fetch(endPointAddr, {
+      method: 'POST',
+      headers: myHeaders,
+      body: formData,
+    });
+    if (response.ok) {
+      console.log('Audio uploaded successfully');
+      const responseData = await response.json();
+      voiceCmd(responseData.text);
+    } else {
+      console.error('Failed to upload audio');
+      console.log(response.json());
+    }
+    
   }
 
  
