@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
-import BeMyEyesLogo from '../images/logo_dark.jpg';
+import { Audio } from 'expo-av';
+import BeMyEyesLogo from '../images/BeMyEyes.png';
 import CameraLogo from '../images/camera.png';
 import MoneyLogo from '../images/money.png';
 import NavigationLogo from '../images/navigation.png';
@@ -13,10 +14,12 @@ import HatLogo from '../images/hat.png';
 import HomeLogo from '../images/home.png';
 import ReplayLogo from '../images/replay.png';
 import SettingsLogo from '../images/settings.png';
+import VoiceLogo from "../images/microphone.png";
 import * as Haptics from 'expo-haptics';
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
+  const [recording, setRecording] = React.useState();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -26,6 +29,89 @@ const HomePage = ({ onNavigate }) => {
       headerTintColor: '#fff', 
     });
   }, [navigation]);
+
+  function voiceCmd(text) {
+    text = text.replace(/\W/g, '');
+    text = text.toLowerCase();
+    console.log(text);
+
+    if(text.includes("describe")) {
+      navigation.navigate('Camera', { headerTitle: 'Describe Scene', endpointName: 'describeImage' });
+    }
+    else if(text.includes("count") || text.includes("money")) {
+      navigation.navigate('Camera', { headerTitle: 'Count Money', endpointName: 'moneyPredict' });
+    }
+    else if(text.includes("read") || text.includes("text")) {
+      navigation.navigate('Camera', { headerTitle: 'Read Text', endpointName: 'wordsImage' });
+    }
+    else if(text.includes("where")) {
+      navigation.navigate('WhereAmI');
+    }
+    else if(text.includes("help")) {
+      Speech.speak("You can say: describe, count money, read text, and where am i");
+    }
+    else {
+      Speech.speak("Sorry, I didn't get that. To see available commands, please say help");
+    }
+  }
+
+  async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      console.log('Starting recording..');
+      const { recording } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+    await Audio.setAudioModeAsync(
+      {
+        allowsRecordingIOS: false,
+      }
+    );
+    const uri = recording.getURI();
+    console.log('Recording stopped and stored at', uri);
+    const fileName = uri.match(/[^\/]+$/)[0];
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer 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");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    const formData = new FormData();
+    formData.append("file", {
+      uri: uri,
+      type: 'audio/mp4',
+      name: fileName,
+    });
+    formData.append("model", "whisper-1");
+    const endPointAddr = "https://api.openai.com/v1/audio/transcriptions";
+    const response = await fetch(endPointAddr, {
+      method: 'POST',
+      headers: myHeaders,
+      body: formData,
+    });
+    if (response.ok) {
+      console.log('Audio uploaded successfully');
+      const responseData = await response.json();
+      voiceCmd(responseData.text);
+    } else {
+      console.error('Failed to upload audio');
+      console.log(response.json());
+    }
+    
+  }
 
  
   const openCamera = (headerTitle, endpointName) => {
@@ -117,6 +203,14 @@ const HomePage = ({ onNavigate }) => {
         >
           <Image source={HomeLogo} style={styles.homeImageLogo} />
           <Text style={styles.footerButtonText}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.footerButton} 
+          onPress={recording ? stopRecording : startRecording}
+        >
+          <Image source={VoiceLogo} style={styles.homeImageLogo} />
+          <Text style={styles.footerButtonText}>{recording ? "Stop" : "Voice"}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
