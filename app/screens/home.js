@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Çizginin rengi
     width: '100%', // Genişlik, ekranın %100'ünü kaplasın
     alignSelf: 'center', // Çizgiyi ekranda ortala
-    marginVertical: height * 0.029, // Üst ve altında 20 piksel boşluk bırak
+    marginVertical: height * 0.02, // Üst ve altında 20 piksel boşluk bırak
   },
 
   
