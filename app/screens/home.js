@@ -57,6 +57,7 @@ const HomePage = ({ onNavigate }) => {
 
   async function startRecording() {
     try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       console.log('Requesting permissions..');
       await Audio.requestPermissionsAsync();
       await Audio.setAudioModeAsync({
@@ -75,6 +76,7 @@ const HomePage = ({ onNavigate }) => {
   }
 
   async function stopRecording() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     console.log('Stopping recording..');
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
