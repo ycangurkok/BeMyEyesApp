@@ -4,13 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
 import { Audio } from 'expo-av';
-import BeMyEyesLogo from '../images/BeMyEyes.png';
+import BeMyEyesLogo from '../images/logo_dark.jpg';
 import CameraLogo from '../images/camera.png';
-import MoneyLogo from '../images/money.png';
-import NavigationLogo from '../images/navigation.png';
+import MoneyLogo from '../images/money2.png';
+import NavigationLogo from '../images/map2.png';
 import VideoLogo from '../images/video.png';
-import TextLogo from '../images/read-text2.png';
-import HatLogo from '../images/smarthat2.jpeg';
+import TextLogo from '../images/read-text.png';
+import HatLogo from '../images/hat.jpeg';
 import HomeLogo from '../images/home.png';
 import ReplayLogo from '../images/replay.png';
 import SettingsLogo from '../images/settings.png';
@@ -151,7 +151,6 @@ const HomePage = ({ onNavigate }) => {
       <View style={styles.row}>
 
         <TouchableOpacity onPress={() => openCamera('Describe Scene','describeImage')} style={styles.button}>
-
         <Image source={CameraLogo} style={styles.imageLogo} />
           <Text style={styles.cameraImageText}>Describe Scene</Text>
         </TouchableOpacity>
@@ -176,7 +175,7 @@ const HomePage = ({ onNavigate }) => {
 
       <View style={styles.row}>
         <TouchableOpacity onPress={() => openCamera('Read Text', 'wordsImage')} style={styles.button}>
-        <Image source={TextLogo} style={styles.navigationImageLogo} />
+        <Image source={TextLogo} style={styles.readTextImageLogo} />
           <Text style={styles.buttonText}>Read Text</Text>
         </TouchableOpacity>
 
@@ -236,8 +235,8 @@ const HomePage = ({ onNavigate }) => {
   );
 }
 const { width, height } = Dimensions.get('window');
-const imageWidthRatio = 0.233; // Logolar için genişlik oranı
-const imageHeightRatio = 0.1; // Logolar için yükseklik oranı
+const imageWidthRatio = 0.35; // Logolar için genişlik oranı
+const imageHeightRatio = 0.13; // Logolar için yükseklik oranı
 
 const styles = StyleSheet.create({
   container: {
@@ -260,7 +259,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: height * 0.05, // relative to screen height
+    marginBottom: height * 0.06, // relative to screen height
   },
   button: {
     borderColor: 'black',
@@ -307,10 +306,12 @@ const styles = StyleSheet.create({
   image: {
     width: width * 1, // Ekran genişliğinin %80'i
     height: height * 0.29, // Ekran yüksekliğinin %25'i
-    marginBottom: height * 0.01,
+    marginBottom: -height * 0.05,
     resizeMode: 'contain',
-
+    justifyContent: 'center',
+    
   },
+
   imageLogo: {
     width: width * imageWidthRatio, // Ekran genişliğinin %20'si
     height: height * imageHeightRatio, // Ekran yüksekliğinin %10'u
@@ -330,6 +331,15 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.02,
     marginBottom: height * 0.005,
     alignSelf: 'center',
+    marginTop: height * 0.02,
+  },
+  readTextImageLogo: {
+    width: width * imageWidthRatio,
+    height: height * imageHeightRatio,
+    marginLeft: width * 0.02,
+    marginBottom: height * 0.005,
+    alignSelf: 'center',
+    marginTop: height * 0.03,
   },
   videoImageLogo: {
     width: width * imageWidthRatio,
@@ -337,13 +347,16 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.04,
     marginBottom: height * 0.005,
     alignSelf: 'center',
+    marginTop: height * 0.02,
+
   },
   hatImageLogo: {
-    width: width * imageWidthRatio * 1.25, // Biraz daha geniş
+    width: width * imageWidthRatio * 1.1, // Biraz daha geniş
     height: height * imageHeightRatio,
-    marginLeft: -width * 0.02,
-    marginBottom: height * 0.005,
+    marginLeft: width * 0.04,
+    marginBottom: height * 0.003,
     alignSelf: 'center',
+    marginTop: height * 0.03,
   },
   homeImageLogo: {
     width: width * 0.1,
@@ -365,7 +378,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Çizginin rengi
     width: '100%', // Genişlik, ekranın %100'ünü kaplasın
     alignSelf: 'center', // Çizgiyi ekranda ortala
-    marginVertical: height * 0.02, // Üst ve altında 20 piksel boşluk bırak
+    marginVertical: height * 0.05, // Üst ve altında 20 piksel boşluk bırak
   },
 
   
