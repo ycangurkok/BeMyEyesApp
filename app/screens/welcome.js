@@ -9,7 +9,11 @@ function WelcomePage() {
   
 
   const openSignUp = () => {
-    navigation.navigate('SignUp');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
+    // navigation.navigate('SignUp');
   };
 
   const openSignIn = () => {

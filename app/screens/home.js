@@ -27,8 +27,8 @@ const HomePage = ({ onNavigate }) => {
   }, [navigation]);
 
  
-  const openCamera = (headerTitle, endpointName) => {
-    navigation.navigate('Camera', { headerTitle, endpointName });
+  const openCamera = () => {
+    navigation.navigate('StreamScreen');
   };
 
   const openWhereAmI = () => {

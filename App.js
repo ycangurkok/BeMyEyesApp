@@ -10,6 +10,7 @@ import HomePage from "./app/screens/home";
 import SettingsPage from "./app/screens/settings";
 import WhereAmIPage from "./app/screens/whereAmI";
 import Redirector from "./app/screens/redirector";
+import StreamScreen from './app/screens/hat';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,10 @@ export default function App() {
           <Stack.Screen name="Settings"   component={SettingsPage} />
 
           <Stack.Screen name="WhereAmI"   component={WhereAmIPage} />
+
+          <Stack.Screen name="StreamScreen"   component={StreamScreen} />
+
+
 
       </Stack.Navigator>
     </NavigationContainer>
