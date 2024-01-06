@@ -89,7 +89,7 @@ const HomePage = ({ onNavigate }) => {
     console.log('Recording stopped and stored at', uri);
     const fileName = uri.match(/[^\/]+$/)[0];
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer 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");
+    myHeaders.append("Authorization", "Bearer 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");
     myHeaders.append("Content-Type", "multipart/form-data");
     const formData = new FormData();
     formData.append("file", {
@@ -117,7 +117,7 @@ const HomePage = ({ onNavigate }) => {
   
   const openCamera = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    navigation.navigate('StreamScreen');
+    navigation.navigate('Camera', { headerTitle, endpointName });
   };
 
   const openWhereAmI = () => {
@@ -129,6 +129,11 @@ const HomePage = ({ onNavigate }) => {
   const openHome = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Home');
+  };
+
+  const openHat = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    navigation.navigate('StreamScreen');
   };
 
   const replaySound = async () => {
@@ -178,7 +183,7 @@ const HomePage = ({ onNavigate }) => {
           <Text style={styles.buttonText}>Read Text</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => openCamera('Smart Hat')} style={styles.button}>
+        <TouchableOpacity onPress={() => openHat()} style={styles.button}>
         <Image source={HatLogo} style={styles.hatImageLogo} />
           <Text style={styles.hatButtonText}>Smart Hat</Text>
         </TouchableOpacity>
