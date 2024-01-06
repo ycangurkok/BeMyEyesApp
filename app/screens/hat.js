@@ -5,10 +5,9 @@ import base64 from 'react-native-base64';
   function StreamScreen() {
   const [streamData, setStreamData] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  let ws;
 
   useEffect(() => {
-    ws = new WebSocket('ws://192.168.1.125:5001/ws/client');
+    const ws = new WebSocket('ws://192.168.1.125:5001/ws/client');
 
     ws.onopen = () => {
       console.log('WebSocket Connected');
@@ -33,10 +32,24 @@ import base64 from 'react-native-base64';
       setIsConnected(false);
     };
 
-    return () => {
-      if (ws) {
-        ws.close();
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState.match(/inactive|background/)) {
+        // Close the WebSocket when the app goes to the background
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.close();
+          console.log('WebSocket Closed due to App State Change');
+        }
       }
+    };
+
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close();
+        console.log('WebSocket Closed');
+      }
+      AppState.removeEventListener('change', handleAppStateChange);
     };
   }, []);
 
