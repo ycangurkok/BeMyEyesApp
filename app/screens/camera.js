@@ -323,7 +323,6 @@ const styles = StyleSheet.create({
       },
       camera: {
         flex: 1,
-        borderRadius: 10,
         height: height * 0.4, // Ekran yüksekliğinin %40'ı
       },
       takePicButton: {
@@ -338,7 +337,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         backgroundColor: '#000',
-        borderRadius: 5,
         marginHorizontal: 5,
         borderWidth: 1,
         borderColor: 'black',
