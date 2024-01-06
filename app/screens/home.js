@@ -114,11 +114,10 @@ const HomePage = ({ onNavigate }) => {
     }
     
   }
-
- 
-  const openCamera = (headerTitle, endpointName) => {
+  
+  const openCamera = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    navigation.navigate('Camera', { headerTitle, endpointName });
+    navigation.navigate('StreamScreen');
   };
 
   const openWhereAmI = () => {
