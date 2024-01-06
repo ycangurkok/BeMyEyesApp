@@ -35,6 +35,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ animation: 'none' }}>
+      <Stack.Screen name="Redirector" options={{headerShown: false}} component={Redirector} />
 
           <Stack.Screen name="Welcome" options={{headerShown: false, title: "Welcome"}} component={WelcomePage} />
 

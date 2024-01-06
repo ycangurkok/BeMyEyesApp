@@ -1,68 +1,157 @@
 import React, { useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from "expo-speech";
-import BeMyEyesLogo from '../images/BeMyEyesNew2.jpeg';
+import { Audio } from 'expo-av';
+import BeMyEyesLogo from '../images/logo_dark.jpg';
 import CameraLogo from '../images/camera.png';
-import MoneyLogo from '../images/money.png';
-import NavigationLogo from '../images/navigation.png';
+import MoneyLogo from '../images/money2.png';
+import NavigationLogo from '../images/map2.png';
 import VideoLogo from '../images/video.png';
-import TextLogo from '../images/text.png';
-import HatLogo from '../images/hat.png';
+import TextLogo from '../images/read-text.png';
+import HatLogo from '../images/hat.jpeg';
 import HomeLogo from '../images/home.png';
 import ReplayLogo from '../images/replay.png';
 import SettingsLogo from '../images/settings.png';
+import VoiceLogo from "../images/microphone.png";
+import * as Haptics from 'expo-haptics';
 
 const HomePage = ({ onNavigate }) => {
   const navigation = useNavigation();
+  const [recording, setRecording] = React.useState();
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: {
         backgroundColor: '#000', // Set the header background color
       },
-      headerTintColor: '#fff', // Optional: Set the header text and icons color
+      headerTintColor: '#fff', 
     });
   }, [navigation]);
 
- 
+  function voiceCmd(text) {
+    text = text.replace(/\W/g, '');
+    text = text.toLowerCase();
+    console.log(text);
+
+    if(text.includes("describe")) {
+      navigation.navigate('Camera', { headerTitle: 'Describe Scene', endpointName: 'describeImage' });
+    }
+    else if(text.includes("count") || text.includes("money")) {
+      navigation.navigate('Camera', { headerTitle: 'Count Money', endpointName: 'moneyPredict' });
+    }
+    else if(text.includes("read") || text.includes("text")) {
+      navigation.navigate('Camera', { headerTitle: 'Read Text', endpointName: 'wordsImage' });
+    }
+    else if(text.includes("where")) {
+      navigation.navigate('WhereAmI');
+    }
+    else if(text.includes("help")) {
+      Speech.speak("You can say: describe, count money, read text, and where am i");
+    }
+    else {
+      Speech.speak("Sorry, I didn't get that. To see available commands, please say help");
+    }
+  }
+
+  async function startRecording() {
+    try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      console.log('Starting recording..');
+      const { recording } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+    await Audio.setAudioModeAsync(
+      {
+        allowsRecordingIOS: false,
+      }
+    );
+    const uri = recording.getURI();
+    console.log('Recording stopped and stored at', uri);
+    const fileName = uri.match(/[^\/]+$/)[0];
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer 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");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    const formData = new FormData();
+    formData.append("file", {
+      uri: uri,
+      type: 'audio/mp4',
+      name: fileName,
+    });
+    formData.append("model", "whisper-1");
+    const endPointAddr = "https://api.openai.com/v1/audio/transcriptions";
+    const response = await fetch(endPointAddr, {
+      method: 'POST',
+      headers: myHeaders,
+      body: formData,
+    });
+    if (response.ok) {
+      console.log('Audio uploaded successfully');
+      const responseData = await response.json();
+      voiceCmd(responseData.text);
+    } else {
+      console.error('Failed to upload audio');
+      console.log(response.json());
+    }
+    
+  }
+  
   const openCamera = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('StreamScreen');
   };
 
   const openWhereAmI = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('WhereAmI');
   };
 
 
   const openHome = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Home');
   };
 
   const replaySound = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const lastSpoken = await AsyncStorage.getItem("lastSpoken");
     Speech.speak(lastSpoken);
   };
 
   const openSettings = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Settings');
   };
 
   return (
     <View style={styles.container}>
-
-    
-    
+   
       <Image source={BeMyEyesLogo} style={styles.image} />
-      
 
       <View style={styles.row}>
 
         <TouchableOpacity onPress={() => openCamera('Describe Scene','describeImage')} style={styles.button}>
-
         <Image source={CameraLogo} style={styles.imageLogo} />
-          <Text style={styles.buttonText}>Describe Scene</Text>
+          <Text style={styles.cameraImageText}>Describe Scene</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => openCamera('Count Money', 'moneyPredict')} style={styles.button}>
@@ -85,7 +174,7 @@ const HomePage = ({ onNavigate }) => {
 
       <View style={styles.row}>
         <TouchableOpacity onPress={() => openCamera('Read Text', 'wordsImage')} style={styles.button}>
-        <Image source={TextLogo} style={styles.navigationImageLogo} />
+        <Image source={TextLogo} style={styles.readTextImageLogo} />
           <Text style={styles.buttonText}>Read Text</Text>
         </TouchableOpacity>
 
@@ -93,13 +182,20 @@ const HomePage = ({ onNavigate }) => {
         <Image source={HatLogo} style={styles.hatImageLogo} />
           <Text style={styles.hatButtonText}>Smart Hat</Text>
         </TouchableOpacity>
-        
+
+      
+
+
       </View>
-      
 
 
-      <View style={styles.footer}>
-      
+      <View style={styles.lineStyle} />
+
+     
+
+      <View style={styles.footer}>      
+
+
         <TouchableOpacity 
         
           style={styles.footerButton} 
@@ -111,17 +207,25 @@ const HomePage = ({ onNavigate }) => {
 
         <TouchableOpacity 
           style={styles.footerButton} 
+          onPress={recording ? stopRecording : startRecording}
+        >
+          <Image source={VoiceLogo} style={styles.homeImageLogo} />
+          <Text style={styles.footerButtonText}>{recording ? "Stop" : "Voice"}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.footerButton} 
           onPress={replaySound}
         >
           <Image source={ReplayLogo} style={styles.homeImageLogo} />
-          <Text style={styles.footerButtonText}>Replay Sound</Text>
+          <Text style={styles.footerButtonText}>Replay</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={styles.footerButton} 
           onPress={openSettings}
         >
-          <Image source={SettingsLogo} style={styles.settingsImageLogo} />
+          <Image source={SettingsLogo} style={styles.homeImageLogo} />
           <Text style={styles.footerButtonText}>Settings</Text>
         </TouchableOpacity>
       </View>
@@ -129,130 +233,175 @@ const HomePage = ({ onNavigate }) => {
     </View>
   );
 }
+const { width, height } = Dimensions.get('window');
+const imageWidthRatio = 0.35; // Logolar için genişlik oranı
+const imageHeightRatio = 0.13; // Logolar için yükseklik oranı
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
     backgroundColor: "#000000",
     alignItems: 'center',
-    padding: 20,
-    marginTop: -40,
+    padding: 15,
+  },
+  mainHeader: {
+    justifyContent: 'center',
+    width: width * 0.95, // Ekran genişliğinin %95'i
+    height: height * 0.17, // Ekran yüksekliğinin %25'i
+    fontSize: width < 400 ? 44 : 52, // Küçük ekranlar için daha küçük font boyutu
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 50,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%', // Tüm genişliği kaplaması için
-    marginBottom: 100,
+    width: '100%',
+    marginBottom: height * 0.06, // relative to screen height
   },
   button: {
     borderColor: 'black',
     borderWidth: 1,
-    padding: 10,
-    width: 180,
-    height: 72,
+    width: width * 0.4, // relative to screen width
+    height: height * 0.1, // relative to screen height
     borderRadius: 15,
-    marginLeft: 15,
-    
   },
+  
   footerButton: {
-    flex: 1, // Eşit genişlikte butonlar
+    flex: 1,
     padding: 10,
-    backgroundColor: '#000', // Buton arka plan rengi
+    backgroundColor: '#000',
     borderRadius: 5,
-    marginHorizontal: 5, // Butonlar arasında boşluk
-    borderWidth: 1, // Kenarlık genişliği
-    borderColor: 'black', // Kenarlık rengi (beyaz)
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: 'black',
   },
   footerButtonText: {
-    color: 'white', // Metin rengi
-    fontSize: 16, // Metin boyutu
-    textAlign: 'center', // Metni ortala
+    color: 'white',
+    fontSize: height < 600 ? 14 : 16, // Küçük ekranlar için daha küçük font boyutu
+    textAlign: 'center',
+    alignSelf: 'center',
   },
   footer: {
-    position: 'absolute', // Footer'ı sayfanın altına sabitle
-    bottom: 0, // En alta yerleştir
-    flexDirection: 'row', // Butonları yan yana sırala
+    position: 'absolute',
+    bottom: 0,
+    flexDirection: 'row',
     width: '100%',
-    height: 80, // Footer yüksekliği
-    backgroundColor: '#000', // Footer arka plan rengi
-    justifyContent: 'center', // İçeriği dikey olarak ortala
-    alignItems: 'center', // İçeriği yatay olarak ortala
-  },
-  footerText: {
-    color: 'white', // Metin rengi
-    fontSize: 16, // Metin boyutu
+    height: height * 0.1, // Ekran yüksekliğinin %10'u
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerText: {
     justifyContent: 'flex-start',
-    width: 392,
-    height: 208,
-    padding: 100,
-    fontSize: 44,
+    width: width * 0.95, // Ekran genişliğinin %95'i
+    height: height * 0.25, // Ekran yüksekliğinin %25'i
+    padding: 20,
+    fontSize: width < 400 ? 36 : 44, // Küçük ekranlar için daha küçük font boyutu
     color: 'white',
+    textAlign: 'center',
   },
   image: {
-    width: 274,
-    height: 207,
-    marginBottom: 20, // add some margin if needed
-    marginTop: 10,
+    width: width * 1, // Ekran genişliğinin %80'i
+    height: height * 0.29, // Ekran yüksekliğinin %25'i
+    marginBottom: -height * 0.05,
+    resizeMode: 'contain',
+    justifyContent: 'center',
+    
+  },
 
-  },
   imageLogo: {
-    width: 87,
-    height: 72,
-    marginBottom: 20, // add some margin if needed
-    marginLeft: 30,
+    width: width * imageWidthRatio, // Ekran genişliğinin %20'si
+    height: height * imageHeightRatio, // Ekran yüksekliğinin %10'u
+    alignSelf: 'center',
   },
+
+
   moneyImageLogo: {
-    width: 95,
-    height: 92,
-    marginLeft: 27,
+    width: width * imageWidthRatio,
+    height: height * imageHeightRatio,
+    marginLeft: width * 0.05,
+    alignSelf: 'center',
   },
   navigationImageLogo: {
-    width: 95,
-    height: 92,
-    marginLeft: 10,
-    marginBottom: 4,
+    width: width * imageWidthRatio,
+    height: height * imageHeightRatio,
+    marginLeft: width * 0.02,
+    marginBottom: height * 0.005,
+    alignSelf: 'center',
+    marginTop: height * 0.02,
+  },
+  readTextImageLogo: {
+    width: width * imageWidthRatio,
+    height: height * imageHeightRatio,
+    marginLeft: width * 0.02,
+    marginBottom: height * 0.005,
+    alignSelf: 'center',
+    marginTop: height * 0.03,
   },
   videoImageLogo: {
-    width: 95,
-    height: 92,
-    marginLeft: 20,
-    marginBottom: 4,
+    width: width * imageWidthRatio,
+    height: height * imageHeightRatio,
+    marginLeft: width * 0.04,
+    marginBottom: height * 0.005,
+    alignSelf: 'center',
+    marginTop: height * 0.02,
+
   },
   hatImageLogo: {
-    width: 125,
-    height: 92,
-    marginLeft: -10,
-    marginBottom: 4,
+    width: width * imageWidthRatio * 1.1, // Biraz daha geniş
+    height: height * imageHeightRatio,
+    marginLeft: width * 0.04,
+    marginBottom: height * 0.003,
+    alignSelf: 'center',
+    marginTop: height * 0.03,
   },
   homeImageLogo: {
-    width: 46,
-    height: 42,
-    marginLeft: 24,
-    marginBottom: -4,
+    width: width * 0.1,
+    height: height * 0.05,
+    marginBottom: -height * 0.001,
+    alignSelf: 'center',
   },
   settingsImageLogo: {
-    width: 45,
-    height: 42,
-    marginLeft: 24,
-    marginBottom: 4,
+    width: width * 0.09,
+    height: height * 0.05,
+    marginLeft: width * 0.05,
+    marginBottom: height * 0.01,
+    alignSelf: 'center',
   },
+  
+
   lineStyle: {
     height: 1, // Çizginin kalınlığı
     backgroundColor: 'white', // Çizginin rengi
-    width: '100%', // Genişlik, tüm ekranı kaplasın
-    marginBottom: 100, // Altındaki içeriğe boşluk bırak
+    width: '100%', // Genişlik, ekranın %100'ünü kaplasın
+    alignSelf: 'center', // Çizgiyi ekranda ortala
+    marginVertical: height * 0.05, // Üst ve altında 20 piksel boşluk bırak
   },
-  buttonText: {
-    fontSize: 24,
+
+  
+  lineContainer: {
+    backgroundColor: 'black', // Arka plan rengini siyah yap
+    width: '100%', // Genişlik, ekranın %100'ünü kaplasın
+  },
+
+
+  cameraImageText: {
+    fontSize: width < 400 ? 19 : 23, // Küçük ekranlar için daha küçük font boyutu
     color: 'white',
+    textAlign: 'center',
+  },
+
+  buttonText: {
+    fontSize: width < 400 ? 20 : 24, // Küçük ekranlar için daha küçük font boyutu
+    color: 'white',
+    textAlign: 'center',
   },
   hatButtonText: {
-    fontSize: 24,
+    fontSize: width < 400 ? 20 : 24, // Küçük ekranlar için daha küçük font boyutu
     color: 'white',
-    marginLeft: 10,
+    textAlign: 'center',
   },
 });
 

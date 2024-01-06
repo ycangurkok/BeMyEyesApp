@@ -1,80 +1,99 @@
-import React, { useState, useLayoutEffect } from 'react';
-import { View, TextInput, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking, Share } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import MapView from 'react-native-maps';
+import * as Location from "expo-location";
+import * as Haptics from 'expo-haptics';
 
 function WhereAmI({ onNavigate }) {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
+  const [location, setLocation] = useState(null);
 
+  useEffect(() => {
+    let locationSubscription;
+  
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+  
+      locationSubscription = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          //distanceInterval: 5,
+        },
+        (newLocation) => {
+          //console.log(newLocation);
+          setLocation(newLocation);
+        }
+      );
+    })();
+    
+    return () => {
+      if (locationSubscription) {
+        locationSubscription.remove();
+      }
+    };
+    
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: {
         backgroundColor: '#000', // Set the header background color
       },
-      headerTintColor: '#fff', // Optional: Set the header text and icons color
+      headerTintColor: '#fff', 
     });
   }, [navigation]);
 
-
-  const openSignUp = () => {
-    navigation.navigate('SignUp');
-  };
-
-
-  const handleEmailChange = (email) => {
-    setEmail(email);
-    setEmailError(null);
-  };
-
-  const handlePasswordChange = (password) => {
-    setPassword(password);
-    setPasswordError(null);
-  };
-
-  const handleSignIn = () => {
-    let e_error = false;
-    let p_error = false;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailRegex.test(email)) {
-      e_error = true;
-      setEmailError("Invalid email address!");
+  const openMaps = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const url = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`);
     }
-    if (password.length < 6 || !/\d/.test(password)) {
-      p_error = true;
-      setPasswordError('Password must be at least 6 characters and include at least one number');
-    }
-    if (p_error || e_error) {
-      return;
-    }
-    // Here you would usually send the email and password to your server
-    console.log('Sign Up with', email, password);
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Home'}],
-    });
   };
+
+  const shareLocation = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const url = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
+    await Share.share({message: `My location: ${url}`});
+  }
 
   return (
     <View style={styles.container}>
-
-
-
+      {location ? (
+        <MapView
+          style={styles.map}
+          customMapStyle={mapStyle}
+          showsUserLocation={true}
+          followsUserLocation={true}
+          scrollEnabled={false}
+          zoomEnabled={false}
+          pitchEnabled={false}
+          region={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0060,
+            longitudeDelta: 0.0060,
+          }}
+        />
+      ) : (
+        <MapView style={styles.map} customMapStyle={mapStyle}/>
+      )}
       <View style={styles.row}>
-
-        <TouchableOpacity onPress={() => openCamera('Describe Scene')} style={styles.button}>
-          <Text style={styles.buttonText}>Open In Google Maps</Text>
+        <TouchableOpacity onPress={() => openMaps()} style={styles.button}>
+          <Text style={styles.buttonText}>Open In Maps</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => openCamera('Count Money')} style={styles.button}>
+        <TouchableOpacity onPress={() => shareLocation()} style={styles.button}>
           <Text style={styles.buttonText}>Share Location</Text>
         </TouchableOpacity>
-
-      </View>
-        
+      </View>    
     </View>
   );
 }
@@ -100,7 +119,7 @@ const styles = StyleSheet.create({
     width: '100%', // Tüm genişliği kaplaması için
     marginBottom: 100,
     alignItems: 'center',
-
+    paddingTop: 60,
   },
   googleButton: {
     height: 67,
@@ -156,7 +175,244 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: '#58CECE'
   },
-
+  map: {
+    width: "100%",
+    height: "65%",
+  },
 });
+
+const mapStyle = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#1d2c4d"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#8ec3b9"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#1a3646"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#4b6878"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#64779e"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.province",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#4b6878"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape.man_made",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#334e87"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#023e58"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#283d6a"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#6f9ba5"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#1d2c4d"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#023e58"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#3C7680"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#304a7d"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#98a5be"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#1d2c4d"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#2c6675"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#255763"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#b0d5ce"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#023e58"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#98a5be"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#1d2c4d"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#283d6a"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#3a4762"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#0e1626"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#4e6d70"
+      }
+    ]
+  }
+]
 
 export default WhereAmI;

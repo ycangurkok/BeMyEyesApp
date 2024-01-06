@@ -16,7 +16,7 @@ function Redirector() {
       if(!token){
         navigation.reset({
           index: 0,
-          routes: [{name: 'Welcome'}],
+          routes: [{name: 'Home'}],
         });
       } else {
         navigation.reset({
