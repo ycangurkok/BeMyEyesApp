@@ -89,7 +89,7 @@ const VideoComponent = ({ onNavigate }) => {
             } else {
                 setIsRecording(true);
                 cameraRef.current.recordAsync({
-                    maxDuration: 10,
+                    maxDuration: 5,
                 }).then(data => {
                     setVideo(data);
                     setIsRecording(false);
@@ -129,53 +129,59 @@ const VideoComponent = ({ onNavigate }) => {
     const saveVideo = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         if (video) {
-            console.log(video.uri);
-            try {
-                const formData = new FormData();
-                formData.append('VideoFile', {
-                    uri: video.uri,
-                    type: 'video/mp4',
-                    name: 'video.mp4',
-                });
+            let durationFlag = false;
+            const videoAsset = await MediaLibrary.createAssetAsync(video.uri);
+            const assetInfo = await MediaLibrary.getAssetInfoAsync(videoAsset);
+            if(assetInfo && assetInfo.duration){
+                const durationInSeconds = assetInfo.duration;
+                if (durationInSeconds > 5){
+                    Speech.speak("Videos cannot be longer than 5 seconds");
+                    durationFlag = true;
+                }
+            }
+            if(!durationFlag){
+                try {
+                    const formData = new FormData();
+                    formData.append('VideoFile', {
+                        uri: video.uri,
+                        type: 'video/mp4',
+                        name: 'video.mp4',
+                    });
+                
+                    let endpointName = "summarizeVideo"
+     
+                    const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                        },
+                        body: formData,
+                    });
             
-                let endpointName = "summarizeVideo"
- 
-                const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/'+ endpointName, {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                    body: formData,
-                });
-        
-                if (response.ok) {
-                    console.log('Image uploaded successfully');
-                    let responseData = await response.json();
-                    if (endpointName=='wordsImage') {
-                    const keys = Object.keys(responseData);
-                        console.log(keys)
-                        responseData = keys
-                    }            
-                    console.log(responseData)
-                    lastSpoken = String(responseData);
-                    await AsyncStorage.setItem('lastSpoken', lastSpoken);
-                    const speak = () => {
-                        const options = {
-                            language: "en-US",
+                    if (response.ok) {
+                        console.log('Video uploaded successfully');
+                        let responseData = await response.json();           
+                        console.log(responseData)
+                        lastSpoken = String(responseData);
+                        await AsyncStorage.setItem('lastSpoken', lastSpoken);
+                        const speak = () => {
+                            const options = {
+                                language: "en-US",
+                            };
+                            Speech.speak(lastSpoken, options);
                         };
-                        Speech.speak(lastSpoken, options);
-                    };
-                    speak();              
-                } else {
-                    console.error('Failed to upload image');
-                    console.log(response);
-                    console.error('Image upload failed. Status Code:', response.status);
-                }              
-            } catch (error) {
-                console.error('Error uploading image', error);
+                        speak();              
+                    } else {
+                        console.error('Failed to upload video');
+                        console.log(response);
+                        console.error('Video upload failed. Status Code:', response.status);
+                    }              
+                } catch (error) {
+                    console.error('Error uploading video', error);
+                }
             }   
         } else {
-            console.warn('No image to save');
+            console.warn('No video to save');
         }
     }
 
@@ -196,7 +202,6 @@ const VideoComponent = ({ onNavigate }) => {
                     >
                 </Camera>
             ) : (
-                // <Image source={{ uri: "data:image/jpg;base64," + image.base64 }} style={styles.camera} />
                 <Image source={{ uri: video.uri }} style={styles.camera} />
             )}
             <View style={styles.lineContainer}>
@@ -205,7 +210,7 @@ const VideoComponent = ({ onNavigate }) => {
                    
                     <TouchableOpacity 
                         style={styles.footerButton} 
-                        onPress={() => setImage(null)}
+                        onPress={() => setVideo(null)}
                     >
                         <Image source={RetakeLogo} style={styles.takePicImageLogo} />     
                     </TouchableOpacity>
