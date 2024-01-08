@@ -20,7 +20,7 @@ import SaveLogo from '../images/save.png';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import GaleryLogo from '../images/galery.png';
-
+import { Video, ResizeMode } from 'expo-av';
 
 
 const VideoComponent = ({ onNavigate }) => {
@@ -53,7 +53,6 @@ const VideoComponent = ({ onNavigate }) => {
         const cameraStatus = await Camera.requestCameraPermissionsAsync();
         const micStatus = await Camera.requestMicrophonePermissionsAsync();
         const mediaLibraryStatus = await MediaLibrary.requestPermissionsAsync();
-
         if (cameraStatus.status === 'granted' && mediaLibraryStatus.status === 'granted' && micStatus.status === 'granted') {
             setCameraPermission(true);
         } else {
@@ -81,6 +80,7 @@ const VideoComponent = ({ onNavigate }) => {
     };
 
     const toggleVideoRecording = async () => {
+        const perms= await Camera.requestMicrophonePermissionsAsync();
         if (cameraRef.current) {
             if (isRecording) {
                 const videoData = await cameraRef.current.stopRecording();
@@ -202,7 +202,14 @@ const VideoComponent = ({ onNavigate }) => {
                     >
                 </Camera>
             ) : (
-                <Image source={{ uri: video.uri }} style={styles.camera} />
+                <Video
+                    style={styles.camera}
+                    source={{
+                    uri: video.uri,
+                    }}
+                    resizeMode={ResizeMode.STRETCH}
+                    isLooping
+                />
             )}
             <View style={styles.lineContainer}>
             {video ? 
