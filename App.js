@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CameraComponent from './app/screens/camera';
+import VideoComponent from './app/screens/video';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpPage from './app/screens/signUp';
@@ -46,6 +47,8 @@ export default function App() {
           <Stack.Screen name="SignIn" options={{headerShown: false, title: "Sign In"}} component={SignInPage} />
 
           <Stack.Screen name="Camera" options={{headerShown: true, title: "Camera"}} component={CameraComponent} />
+
+          <Stack.Screen name="Video" options={{headerShown: true, title: "Video"}} component={VideoComponent} />
  
           <Stack.Screen name="Settings"   component={SettingsPage} />
 

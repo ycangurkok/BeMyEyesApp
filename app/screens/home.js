@@ -89,7 +89,7 @@ const HomePage = ({ onNavigate }) => {
     console.log('Recording stopped and stored at', uri);
     const fileName = uri.match(/[^\/]+$/)[0];
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer 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");
+    myHeaders.append("Authorization", "Bearer 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");
     myHeaders.append("Content-Type", "multipart/form-data");
     const formData = new FormData();
     formData.append("file", {
@@ -118,6 +118,11 @@ const HomePage = ({ onNavigate }) => {
   const openCamera = (headerTitle, endpointName) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate('Camera', { headerTitle, endpointName });
+  };
+
+  const openVideo = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    navigation.navigate('Video');
   };
   
   const openWhereAmI = () => {
@@ -171,7 +176,7 @@ const HomePage = ({ onNavigate }) => {
           <Text style={styles.buttonText}>Where Am I?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => openCamera('Video Capture')} style={styles.button}>
+        <TouchableOpacity onPress={() => openVideo()} style={styles.button}>
         <Image source={VideoLogo} style={styles.videoImageLogo} />
           <Text style={styles.buttonText}>Video Capture</Text>
         </TouchableOpacity>
