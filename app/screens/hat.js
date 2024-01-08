@@ -1,22 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Image, StyleSheet, Button, Text } from 'react-native';
 import base64 from 'react-native-base64';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Speech from 'expo-speech';
 
-  function StreamScreen() {
+function StreamScreen() {
   const [streamData, setStreamData] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  let ws;
+  const wsRef = useRef(null); // Use useRef for the WebSocket instance
 
-  useEffect(() => {
-    ws = new WebSocket('ws://192.168.1.125:5001/ws/client');
+  const startStream = async () => {
+    try {
+      // Send a GET request to the start-stream endpoint
+      await fetch('http://192.168.1.125:5001/start-stream', { method: 'GET' });
+      console.log('Stream start request sent');
+    } catch (error) {
+      console.error('Error sending start stream request:', error);
+    }
+  };
+  
+  const stopStream = async () => {
+    try {
+      // Send a GET request to the stop-stream endpoint
+      await fetch('http://192.168.1.125:5001/stop-stream', { method: 'GET' });
+      console.log('Stream stop request sent');
+    } catch (error) {
+      console.error('Error sending stop stream request:', error);
+    }
+  };
+  
+  const connectWebSocket = async () => {
+    if (!wsRef.current || wsRef.current.readyState === WebSocket.CLOSED) {
+      wsRef.current = new WebSocket('ws://192.168.1.125:5001/ws/client');
 
-    ws.onopen = () => {
-      console.log('WebSocket Connected');
-      setIsConnected(true);
-    };
+      wsRef.current.onopen = async () => {
+        console.log('WebSocket Connected');
+        setIsConnected(true);
+        await startStream();
+      };
 
-    ws.onmessage = (e) => {
-        // Convert the byte array to a base64 string
+      wsRef.current.onmessage = (e) => {
         let bytes = new Uint8Array(e.data);
         let binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
         let imageBase64 = base64.encode(binary);
@@ -24,34 +47,132 @@ import base64 from 'react-native-base64';
         setStreamData(imageSrc);
       };
 
-    ws.onerror = (e) => {
-      console.log(e.message);
-    };
+      wsRef.current.onerror = (e) => {
+        console.log(e.message);
+      };
 
-    ws.onclose = (e) => {
-      console.log('WebSocket Disconnected');
-      setIsConnected(false);
-    };
+      wsRef.current.onclose = async () => {
+        console.log('WebSocket Disconnected');
+        setIsConnected(false);
+        await stopStream();
+      };
+    }
+  };
 
+  useEffect(() => {
+    connectWebSocket(); // This will be called each time the component mounts
+  
     return () => {
-      if (ws) {
-        ws.close();
+      if (wsRef.current) {
+        wsRef.current.close(); // Close WebSocket on unmount
       }
     };
   }, []);
-
-  // Example button actions
-  const handleButtonPress1 = () => {
+  
+  const handleButtonPress1 = async () => {
     console.log('Button 1 pressed');
+  
+    if (!streamData) {
+      console.error('No stream data available');
+      return;
+    }
+  
+    try {
+      // Create FormData and append the image
+      const formData = new FormData();
+      // Send the FormData using fetch to your desired endpoint
+      formData.append('ImageFile', {
+        uri: streamData,
+        type: 'image/jpg',
+        name: 'photo.jpg'
+      });
+      const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/describeImage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        console.log(response);
+        throw new Error('Failed to send image');
+      }
+  
+      console.log('Image sent successfully');
+      let responseData = await response.json();
+      console.log(responseData)
+      lastSpoken = String(responseData);
+      await AsyncStorage.setItem('lastSpoken', lastSpoken);
+      const speak = () => {
+          const options = {
+            language: "en-US",
+            onDone: () => console.log("Speech done"),
+            onStart: () => console.log("Speech started"),
+          };
+        
+          Speech.speak(lastSpoken, options);
+        };
+        
+      speak();     
+    } catch (error) {
+      console.error('Error sending image:', error);
+    }
   };
 
-  const handleButtonPress2 = () => {
+  const handleButtonPress2 = async () => {
     console.log('Button 2 pressed');
-  };
+  
+    if (!streamData) {
+      console.error('No stream data available');
+      return;
+    }
+  
+    try {
+      // Create FormData and append the image
+      const formData = new FormData();
+      // Send the FormData using fetch to your desired endpoint
+      formData.append('ImageFile', {
+        uri: streamData,
+        type: 'image/jpg',
+        name: 'photo.jpg'
+      });
+      const response = await fetch('https://bemyeyesdeploy.azurewebsites.net/api/ImageAnalysis/wordsImage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        console.log(response);
+        throw new Error('Failed to send image');
+      }
+  
+      console.log('Image sent successfully');
+      let responseData = await response.json();
+      const keys = Object.keys(responseData);
+      responseData = keys
+      lastSpoken = String(responseData);
+      await AsyncStorage.setItem('lastSpoken', lastSpoken);
+      const speak = () => {
+          const options = {
+            language: "en-US",
+            onDone: () => console.log("Speech done"),
+            onStart: () => console.log("Speech started"),
+          };
+        
+          Speech.speak(lastSpoken, options);
+        };
+        
+      speak();     
+    } catch (error) {
+      console.error('Error sending image:', error);
+    }  };
 
   return (
     <View style={styles.container}>
-
       <View style={styles.streamContainer}>
         {!isConnected && <Text>Connecting...</Text>}
         {streamData && (
@@ -64,7 +185,6 @@ import base64 from 'react-native-base64';
         <Button title="Button 2" onPress={handleButtonPress2} />
         {/* Add more buttons as needed */}
       </View>
-
     </View>
   );
 }

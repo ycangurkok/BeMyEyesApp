@@ -11,12 +11,15 @@ import SettingsPage from "./app/screens/settings";
 import WhereAmIPage from "./app/screens/whereAmI";
 import Redirector from "./app/screens/redirector";
 import StreamScreen from './app/screens/hat';
+import { LogBox } from 'react-native';
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
   const [isSignedIn, setIsSignedIn] = useState(false);
+  LogBox.ignoreAllLogs();
 
   useEffect(() => {
     checkSignInStatus();
