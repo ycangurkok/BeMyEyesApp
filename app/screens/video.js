@@ -88,9 +88,12 @@ const VideoComponent = ({ onNavigate }) => {
                 setIsRecording(false);
             } else {
                 setIsRecording(true);
-                cameraRef.current.recordAsync().then(data => {
+                cameraRef.current.recordAsync({
+                    maxDuration: 10,
+                }).then(data => {
                     setVideo(data);
                     setIsRecording(false);
+                    
                 });
             }
         }
@@ -143,7 +146,7 @@ const VideoComponent = ({ onNavigate }) => {
                         Accept: 'application/json',
                     },
                     body: formData,
-                });  
+                });
         
                 if (response.ok) {
                     console.log('Image uploaded successfully');
