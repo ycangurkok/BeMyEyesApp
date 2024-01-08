@@ -124,10 +124,6 @@ const CameraComponent = ({ onNavigate }) => {
         console.log(result.assets[0].uri)
     };
 
-
-    
-
-
     const saveImage = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         if (image) {
@@ -172,12 +168,12 @@ const CameraComponent = ({ onNavigate }) => {
                         const speak = () => {
                             const options = {
                               language: "en-US",
-                            };
+                                                          };
                           
                             Speech.speak(lastSpoken, options);
                           };
                           
-                          speak();              
+                        speak();              
                     } else {
                         console.error('Failed to upload image');
                         console.log(response);

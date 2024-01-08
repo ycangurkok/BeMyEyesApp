@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import { View, FlatList, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +12,16 @@ function Settings() {
     { key: 'logout', title: 'Log out' },
     { key: 'customization', title: 'Customization' },
   ];
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: '#000', // Set the header background color
+      },
+      headerTintColor: '#fff', 
+    });
+  }, [navigation]);
+  
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
