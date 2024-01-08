@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { View, Image, StyleSheet, Button, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import base64 from 'react-native-base64';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from 'expo-speech';
@@ -7,8 +8,18 @@ import * as Speech from 'expo-speech';
 function StreamScreen() {
   const [streamData, setStreamData] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const navigation = useNavigation();
   const wsRef = useRef(null); // Use useRef for the WebSocket instance
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: '#000', // Set the header background color
+      },
+      headerTintColor: '#fff', 
+    });
+  }, [navigation]);
+  
   const startStream = async () => {
     try {
       // Send a GET request to the start-stream endpoint
@@ -192,7 +203,7 @@ function StreamScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5fcff'
+    backgroundColor: '#000000' // Set background color to black
   },
   streamContainer: {
     flex: 1,
@@ -208,7 +219,11 @@ const styles = StyleSheet.create({
     width: '90%', // Adjust as needed
     height: '90%', // Adjust as needed
     resizeMode: 'contain'
+  },
+  text: {
+    color: '#FFFFFF' // Set text color to white
   }
 });
+
 
 export default StreamScreen;
